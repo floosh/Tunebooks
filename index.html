@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <title>Sessions Map</title>
+    <link rel="stylesheet" href="css/pure-min.css" />
+    <link rel="stylesheet" href="css/side-menu.css" />handlebars.min-v4.7.8.js
+    <link rel="stylesheet" href="css/style.css" />
+    <script src="lib/jquery-3.7.1.min.js"></script>
+    <script src="lib/handlebars.min-v4.7.8.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
+</head>
+
+<body>
+    <div id="layout">
+        <a href="#menu" id="menuLink" class="menu-link">
+            <span>
+            </span>
+        </a>
+        <div id="menu">
+            <div class="logo">
+                <div class="ribbon">
+                    Tunebooks
+                </div>
+            </div>
+            <span>Display :</span>
+            <a class="menu-item" id="Tunes">All </a>
+            <a class="menu-item" id="Sets">Sessions </a>
+            <i><span id="lastUpdate"></span></i>
+            <a id="githubLink" href="https://github.com/floosh/Tunebooks">Github</a>
+        </div>
+        <div id="main" class="pure-g">
+            <div id="tunes" class="pure-u-1-4">
+                <div class="tab-header">
+                    <p>Tunes</p>
+                    <select id="tunesBrowse" placeholder="Search a tune..." hidden="true"></select>
+                </div>
+                <div id="tunes-container"></div>
+            </div>
+            <div id="sets" class="pure-u-3-4">
+                 <div class="tab-header">
+                    <p>Sets</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script id="tune-template" type="text/x-handlebars-template">
+      <div class="tune-entry">
+        <p>{{name}}</p>
+        <p><span class="tune-type">{{type}}</span><span class="tune-mode">{{mode}}</span></p>
+      </div>
+    </script>
+
+    <script>
+
+    var tunes;
+    var model = {tunes:{}};
+
+    var tune_template_source = document.getElementById("tune-template").innerHTML;
+    var tune_template = Handlebars.compile(tune_template_source);
+
+
+    function getJson(url) {
+        return new Promise((resolve, reject) => {
+            const xhr = new XMLHttpRequest();
+            xhr.overrideMimeType("application/json");
+            xhr.open("GET", url);
+            xhr.onload = () => resolve(JSON.parse(xhr.responseText));
+            xhr.onerror = () => reject(xhr.statusText);
+            xhr.send();
+        });
+    }
+
+    function refreshView()
+    {
+        var tunes_container = document.getElementById("tunes-container");
+        tunes_container.innerHTML = "";
+        for(var tune of Object.values(model.tunes))
+        {
+            console.log(tune);
+            tunes_container.insertAdjacentHTML('beforeend', tune_template(tune));
+        }
+    }
+
+    function onItemAddCallback(item) {
+        if (!model.tunes[item])
+        {
+            model.tunes[item] = tunes[item];
+        }
+        refreshView();
+    }
+
+    var dumpurl = "https://raw.githubusercontent.com/adactio/TheSession-data/master/json/";
+    var jsonFiles = ["tunes.json"];
+    getJson(dumpurl + jsonFiles[0])
+    .then(function(data) {
+        tunes = data.reduce((acc, t) => {
+            if (!acc[t.tune_id])
+            {
+                acc[t.tune_id] = {
+                    id: t.tune_id,
+                    name: t.name,
+                    type: t.type,
+                    mode: t.mode
+                }
+            }
+            return acc;
+        }, {});
+
+        var tunesOptions = Object.values(tunes).map(t => {
+            return {
+                id: t.id,
+                name: t.name,
+                type: t.type,
+                mode: t.mode
+            }
+        })
+
+        console.log(tunes)
+        new TomSelect('#tunesBrowse',{
+            valueField: 'id',
+            labelField: 'name',
+            searchField: ['name'],
+            options: tunesOptions,
+            // custom rendering function for options
+            render: {
+                option: function(item, escape) {
+                    return `<div class="py-2 d-flex">
+                                <div class="mb-1">
+                                    <span class="h5">
+                                        ${ escape(item.name) }
+                                    </span>
+                                </div>
+                            </div>`;
+                }
+            },
+            onItemAdd: onItemAddCallback
+        });
+    });
+
+    getJson("https://api.github.com/repos/adactio/TheSession-data/git/refs/heads/master").then(function(ref) {
+        return getJson("https://api.github.com/repos/adactio/TheSession-data/git/commits/" + ref.object.sha);
+    }).then(function(commit) {
+        document.getElementById('lastUpdate').innerHTML = "Last updated " + moment(commit.author.date).fromNow()
+    })
+
+    $(function() {
+        refreshView();
+    });
+    </script>
+
+
+
+
+    <script src="lib/ui.js"></script>
+</body>
+
+</html>
