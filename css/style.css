@@ -66,3 +66,9 @@
        background-color: lightblue;
        margin: 10px;
 }
+
+.tune-mode
+{
+     font-weight: bold;
+     padding: 0 5px;
+}

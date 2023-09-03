@@ -26,8 +26,8 @@
                 </div>
             </div>
             <span>Display :</span>
-            <a class="menu-item" id="Tunes">All </a>
-            <a class="menu-item" id="Sets">Sessions </a>
+            <!-- <a class="menu-item" id="Tunes">All </a>
+            <a class="menu-item" id="Sets">Sessions </a> -->
             <i><span id="lastUpdate"></span></i>
             <a id="githubLink" href="https://github.com/floosh/Tunebooks">Github</a>
         </div>
@@ -57,7 +57,7 @@
     <script>
 
     var tunes;
-    var model = {tunes:{}};
+    var model = {"tunes":[{"id":"1","name":"Cooley's","type":"reel","mode":"Edorian"},{"id":"4","name":"Belfast, The","type":"hornpipe","mode":"Dmajor"},{"id":"3","name":"Boil The Breakfast Early","type":"reel","mode":"Gmajor"},{"id":"2","name":"Bucks Of Oranmore, The","type":"reel","mode":"Dmajor"},{"id":"6","name":"This Is My Love, Do You Like Her?","type":"jig","mode":"Eminor"}]};
 
     var tune_template_source = document.getElementById("tune-template").innerHTML;
     var tune_template = Handlebars.compile(tune_template_source);
@@ -78,7 +78,7 @@
     {
         var tunes_container = document.getElementById("tunes-container");
         tunes_container.innerHTML = "";
-        for(var tune of Object.values(model.tunes))
+        for(var tune of model.tunes)
         {
             console.log(tune);
             tunes_container.insertAdjacentHTML('beforeend', tune_template(tune));
@@ -86,9 +86,11 @@
     }
 
     function onItemAddCallback(item) {
-        if (!model.tunes[item])
+        if (!model.tunes.some(t => {
+            t.id === item.id
+        }))
         {
-            model.tunes[item] = tunes[item];
+            model.tunes.push(tunes[item]);
         }
         refreshView();
     }
