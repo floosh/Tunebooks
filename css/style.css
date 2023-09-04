@@ -72,3 +72,14 @@
      font-weight: bold;
      padding: 0 5px;
 }
+
+.set-entry {
+     padding: 15px;
+  box-sizing: border-box;
+  background-color: lightgrey;
+  border: 5px solid white;
+}
+
+.set-tunes-container {
+     min-height: 50px;
+}
