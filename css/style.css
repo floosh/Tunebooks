@@ -29,57 +29,96 @@
  }
 
  .menu-item {
- 	display: block;
-	-webkit-transition: all 0.2s ease-out;
-	-moz-transition: all 0.2s ease-out;
-	-ms-transition: all 0.2s ease-out;
-	-o-transition: all 0.2s ease-out;
-	transition: all 0.2s ease-out;
-	cursor: pointer;
+     display: block;
+     -webkit-transition: all 0.2s ease-out;
+     -moz-transition: all 0.2s ease-out;
+     -ms-transition: all 0.2s ease-out;
+     -o-transition: all 0.2s ease-out;
+     transition: all 0.2s ease-out;
+     cursor: pointer;
  }
 
  .menu-item:hover,
  .menu-item-selected {
- 	background: #EEE;
+     background: #EEE;
  }
 
-#menu span {
+ #menu span {
      padding: 10px;
      margin-top: 10px;
      display: block;
-}
+ }
 
-#githubLink {
+ #save-btn {
+     width: 100%;
+ }
+
+ .menu-footer {
+     width: 100%;
+     box-sizing: border-box;
      position: absolute;
+     padding: 10px;
      bottom: 0;
      left: 0;
-}
+ }
 
-.tab-header {
+ #save-btn {
+     margin-bottom: 10px;
+ }
+
+ .tab-header {
      padding: 15px;
      box-sizing: border-box;
-}
+ }
 
-.tune-entry {
+ .tune-entry {
      padding: 1px 10px;
-       box-sizing: border-box;
-       background-color: lightblue;
-       margin: 10px;
-}
+     box-sizing: border-box;
+     background-color: lightblue;
+     margin: 10px;
+ }
 
-.tune-mode
-{
+ .tune-mode {
      font-weight: bold;
      padding: 0 5px;
-}
+ }
 
-.set-entry {
+ .set-entry {
      padding: 15px;
-  box-sizing: border-box;
-  background-color: lightgrey;
-  border: 5px solid white;
-}
+     box-sizing: border-box;
+     background-color: lightgrey;
+     border: 5px solid white;
+ }
 
-.set-tunes-container {
+ .set-tunes-container {
      min-height: 50px;
-}
+ }
+
+ .button-success,
+ .button-error,
+ .button-warning,
+ .button-secondary {
+     color: white;
+     border-radius: 4px;
+     text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+ }
+
+ .button-success {
+     background: rgb(28, 184, 65);
+     /* this is a green */
+ }
+
+ .button-error {
+     background: rgb(202, 60, 60);
+     /* this is a maroon */
+ }
+
+ .button-warning {
+     background: rgb(223, 117, 20);
+     /* this is an orange */
+ }
+
+ .button-secondary {
+     background: rgb(66, 184, 221);
+     /* this is a light blue */
+ }
