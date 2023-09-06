@@ -9,6 +9,8 @@
     <link rel="stylesheet" href="css/side-menu.css" />
     <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="css/dragula.min.css" />
+    <link rel="stylesheet" href="assets/fontawesome/css/fontawesome.min.css" />
+    <link rel="stylesheet" href="assets/fontawesome/css/solid.min.css" />
     <script src="lib/jquery-3.7.1.min.js"></script>
     <script src="lib/handlebars.min-v4.7.8.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.css" rel="stylesheet">
@@ -28,7 +30,6 @@
                     Tunebooks
                 </div>
             </div>
-            <span>Display :</span>
             <div class="menu-footer">
                 <button id="save-btn" disabled="true" class="button-secondary pure-button">Save</button>
                 <a id="github-link" href="https://github.com/floosh/Tunebooks">Github</a>
@@ -47,14 +48,14 @@
                     <p>Sets</p>
                     <a id="new-set-btn" class="pure-button" href="#">New</a>
                 </div>
-                <div id="sets-container"></div>
+                <div id="sets-container" class=pure-g></div>
             </div>
         </div>
     </div>
     <script id="tune-template" type="text/x-handlebars-template">
         <div class="tune-entry">
         <p hidden=true class="tune-id">{{id}}</p>
-        <p>{{name}}</p>
+        <p>{{name}}<i class="fas fa-xmark tune-entry-delete-btn" onclick="helpers.tunes.delete(this)"></i></p>
         <p><span class="tune-type">{{type}}</span><span class="tune-mode">{{mode}}</span></p>
       </div>
     </script>
@@ -108,22 +109,40 @@
         });
     }
 
-    function refreshView() {
-        var tunes_container = document.getElementById("tunes-container");
-        tunes_container.innerHTML = "";
-        for (var tune of model.tunes) {
-            tunes_container.insertAdjacentHTML('beforeend', tune_template(tune));
-        }
-    }
-
     var helpers = {
         tunes: {
             add: function(item) {
                 if (!model.tunes.some(t => { return t.id === item })) {
                     model.tunes.push(tunes[item]);
-                    refreshView();
+                    helpers.tunes.deserialize();
                 }
                 helpers.model.hasChanged();
+            },
+            delete: function(element)
+            {
+                var tune_entry = $(element).closest("div.tune-entry");
+                tune_entry.remove();
+                helpers.model.hasChanged();
+            },
+            serialize: function()
+            {
+                var tunes = [];
+                $("#tunes-container > div.tune-entry").each(function(id, element) {
+                    tunes.push(helpers.tunes.serializeTuneEntry(element));
+                });
+                return tunes;
+            },
+            serializeTuneEntry: function(element) {
+                var tune_id = element.querySelector("p.tune-id").innerText;
+                return model.tunes.find(t => t.id === tune_id);
+            },
+            deserialize: function()
+            {
+                var tunes_container = document.getElementById("tunes-container");
+                tunes_container.innerHTML = "";
+                for (var tune of model.tunes) {
+                    tunes_container.insertAdjacentHTML('beforeend', tune_template(tune));
+                }
             }
         },
         sets: {
@@ -148,9 +167,7 @@
                         tunes: []
                     }
                     var tunes = set_entry.querySelectorAll("div.tune-entry").forEach((tune, index) => {
-                        var tune_id = tune.querySelector("p.tune-id").innerText;
-                        var tune = model.tunes.find(t => t.id === tune_id);
-                        set.tunes.push(tune);
+                        set.tunes.push(helpers.tunes.serializeTuneEntry(tune));
                     });
                     sets.push(set);
                 });
@@ -170,6 +187,7 @@
             save: function() {
                 $("#save-btn")[0].disabled = true;
                 model.sets = helpers.sets.serialize();
+                model.tunes = helpers.tunes.serialize();
                 putJson(helpers.model.url, model);
             },
             hasChanged: function() {
@@ -179,7 +197,7 @@
                 getJson(helpers.model.url + "/latest").then(function(data) {
                     model = data.record;
                     helpers.sets.deserialize();
-                    refreshView();
+                    helpers.tunes.deserialize();
                 });
             }
         }
@@ -233,14 +251,12 @@
 
     $(function() {
         helpers.model.load();
-        refreshView();
 
         $("#new-set-btn").on("click", helpers.sets.new);
         $("#save-btn").on("click", helpers.model.save);
 
         var drake = dragula([document.getElementById('tunes-container')], {
             isContainer: function(el) {
-                console.log(el.id);
                 return el.classList.contains("set-tunes-container");
             },
             copy: function(el, source) {

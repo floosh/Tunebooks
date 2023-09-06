@@ -71,6 +71,16 @@
      box-sizing: border-box;
  }
 
+ #tunes {
+     box-shadow: 5px 0px 5px -5px rgba(0, 0, 0, 0.75);
+     height: 100%;
+ }
+
+ #tunes-container {
+     overflow: scroll;
+     height: 100%;
+ }
+
  .tune-entry {
      padding: 1px 10px;
      box-sizing: border-box;
@@ -83,11 +93,20 @@
      padding: 0 5px;
  }
 
+ .tune-entry-delete-btn {
+     float: right;
+ }
+.tune-entry-delete-btn:hover {
+     color: red;
+     cursor: pointer;
+ }
+
+
  .set-entry {
      padding: 15px;
      box-sizing: border-box;
      background-color: lightgrey;
-     border: 5px solid white;
+     margin: 5px;
  }
 
  .set-tunes-container {
@@ -121,4 +140,8 @@
  .button-secondary {
      background: rgb(66, 184, 221);
      /* this is a light blue */
+ }
+
+ #sets-container {
+     margin: 10px;
  }
