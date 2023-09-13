@@ -2,62 +2,62 @@
 <html>
 
 <head>
-    <meta http-equiv="content-type" content="text/html; charset=utf-8">
-    <title>Tunebooks</title>
-    <link rel="stylesheet" href="css/pure-min.css" />
-    <link rel="stylesheet" href="css/buttons-min.css" />
-    <link rel="stylesheet" href="css/side-menu.css" />
-    <link rel="stylesheet" href="css/style.css" />
-    <link rel="stylesheet" href="css/dragula.min.css" />
-    <link rel="stylesheet" href="assets/fontawesome/css/fontawesome.min.css" />
-    <link rel="stylesheet" href="assets/fontawesome/css/solid.min.css" />
-    <script src="lib/jquery-3.7.1.min.js"></script>
-    <script src="lib/handlebars.min-v4.7.8.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
-    <script src='lib/dragula.min.js'></script>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8">
+	<title>Tunebooks</title>
+	<link rel="stylesheet" href="css/pure-min.css" />
+	<link rel="stylesheet" href="css/buttons-min.css" />
+	<link rel="stylesheet" href="css/side-menu.css" />
+	<link rel="stylesheet" href="css/style.css" />
+	<link rel="stylesheet" href="css/dragula.min.css" />
+	<link rel="stylesheet" href="assets/fontawesome/css/fontawesome.min.css" />
+	<link rel="stylesheet" href="assets/fontawesome/css/solid.min.css" />
+	<script src="lib/jquery-3.7.1.min.js"></script>
+	<script src="lib/handlebars.min-v4.7.8.js"></script>
+	<link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.css" rel="stylesheet">
+	<script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
+	<script src='lib/dragula.min.js'></script>
 </head>
 
 <body>
-    <div id="layout">
-        <a href="#menu" id="menuLink" class="menu-link">
-            <span>
-            </span>
-        </a>
-        <div id="menu">
-            <div class="logo">
-                <div class="tab-header">
-                    <p class="tab-title">Tunebooks</p>
-                </div>
-            </div>
-            <div class="menu-footer">
-                <button id="save-btn" disabled="true" class="button-secondary pure-button">Save</button>
-                <a id="github-link" href="https://github.com/floosh/Tunebooks">Github</a>
-            </div>
-        </div>
-        <div id="main" class="pure-g">
-            <div id="tunes" class="pure-u-1-4">
-                <div class="tab-header">
-                    <select id="tunesBrowse" placeholder="Search a tune..." hidden="true"></select>
-                </div>
-                <div id="tunes-container"></div>
-            </div>
-            <div id="sets" class="pure-u-3-4">
-                <div class="tab-header tab-header-sets">
-                    <a id="new-set-btn" class="pure-button pure-button-primary" href="#">New set</a>
-                </div>
-                <div id="sets-container" class=pure-g></div>
-            </div>
-        </div>
-    </div>
-    <script id="tune-template" type="text/x-handlebars-template">
+	<div id="layout">
+		<a href="#menu" id="menuLink" class="menu-link">
+			<span>
+			</span>
+		</a>
+		<div id="menu">
+			<div class="logo">
+				<div class="tab-header">
+					<p class="tab-title">Tunebooks</p>
+				</div>
+			</div>
+			<div class="menu-footer">
+				<button id="save-btn" disabled="true" class="button-secondary pure-button">Save</button>
+				<a id="github-link" href="https://github.com/floosh/Tunebooks">Github</a>
+			</div>
+		</div>
+		<div id="main" class="pure-g">
+			<div id="tunes" class="pure-u-1-4">
+				<div class="tab-header">
+					<select id="tunesBrowse" placeholder="Search a tune..." hidden="true"></select>
+				</div>
+				<div id="tunes-container"></div>
+			</div>
+			<div id="sets" class="pure-u-3-4">
+				<div class="tab-header tab-header-sets">
+					<a id="new-set-btn" class="pure-button pure-button-primary" href="#">New set</a>
+				</div>
+				<div id="sets-container" class=pure-g></div>
+			</div>
+		</div>
+	</div>
+	<script id="tune-template" type="text/x-handlebars-template">
         <div class="tune-entry">
         <p hidden=true class="tune-id">{{id}}</p>
         <p>{{name}}<i class="fas fa-xmark tune-entry-delete-btn" onclick="helpers.tunes.delete(this)"></i></p>
-        <p><span class="tune-type">{{type}}</span><span class="tune-mode">{{mode}}</span></p>
+        <p><span class="tune-type">{{type}}</span><span class="tune-mode">{{mode}}</span><span class="tune-abc">{{abc}}</span></p>
       </div>
     </script>
-    <script id="set-template" type="text/x-handlebars-template">
+	<script id="set-template" type="text/x-handlebars-template">
         <div class="set-entry pure-u-1-3">
         <input class= "set-title" value="{{title}}"></input>
         <div class="set-tunes-container">
@@ -67,207 +67,248 @@
         </div>
     </div>
     </script>
-    <script>
-    var tunes;
-    var model = { tunes: [], sets: [] };
+	<script>
+		var tunes;
+		var model = { tunes: [], sets: [] };
 
-    var tune_template_source = document.getElementById("tune-template").innerHTML;
-    var tune_template = Handlebars.compile(tune_template_source);
+		var tune_template_source = document.getElementById("tune-template").innerHTML;
+		var tune_template = Handlebars.compile(tune_template_source);
 
-    var set_template_source = document.getElementById("set-template").innerHTML;
-    var set_template = Handlebars.compile(set_template_source);
+		var set_template_source = document.getElementById("set-template").innerHTML;
+		var set_template = Handlebars.compile(set_template_source);
 
-    Handlebars.registerPartial("tune_template", tune_template);
+		Handlebars.registerPartial("tune_template", tune_template);
 
 
-    function getJson(url) {
-        return new Promise((resolve, reject) => {
-            fetch(url).then(response => {
-                resolve(response.json());
-            });
-        });
-    }
+		function getJson(url)
+		{
+			return new Promise((resolve, reject) =>
+			{
+				fetch(url).then(response =>
+				{
+					resolve(response.json());
+				});
+			});
+		}
 
-    function putJson(url, data) {
-        return new Promise((resolve, reject) => {
-            fetch(url, {
-                method: "PUT",
-                mode: "cors",
-                cache: "no-cache",
-                credentials: "same-origin",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                redirect: "follow",
-                referrerPolicy: "no-referrer",
-                body: JSON.stringify(data),
-            }).then(response => {
-                resolve(response.json());
-            });
-        });
-    }
+		function putJson(url, data)
+		{
+			return new Promise((resolve, reject) =>
+			{
+				fetch(url, {
+					method: "PUT",
+					mode: "cors",
+					cache: "no-cache",
+					credentials: "same-origin",
+					headers: {
+						"Content-Type": "application/json"
+					},
+					redirect: "follow",
+					referrerPolicy: "no-referrer",
+					body: JSON.stringify(data),
+				}).then(response =>
+				{
+					resolve(response.json());
+				});
+			});
+		}
 
-    var helpers = {
-        tunes: {
-            add: function(item) {
-                if (!model.tunes.some(t => { return t.id === item })) {
-                    model.tunes.push(tunes[item]);
-                    helpers.tunes.deserialize();
-                }
-                helpers.model.hasChanged();
-            },
-            delete: function(element)
-            {
-                var tune_entry = $(element).closest("div.tune-entry");
-                tune_entry.remove();
-                helpers.model.hasChanged();
-            },
-            serialize: function()
-            {
-                var tunes = [];
-                $("#tunes-container > div.tune-entry").each(function(id, element) {
-                    tunes.push(helpers.tunes.serializeTuneEntry(element));
-                });
-                return tunes;
-            },
-            serializeTuneEntry: function(element) {
-                var tune_id = element.querySelector("p.tune-id").innerText;
-                return model.tunes.find(t => t.id === tune_id);
-            },
-            deserialize: function()
-            {
-                var tunes_container = document.getElementById("tunes-container");
-                tunes_container.innerHTML = "";
-                for (var tune of model.tunes) {
-                    tunes_container.insertAdjacentHTML('beforeend', tune_template(tune));
-                }
-            }
-        },
-        sets: {
-            new: function() {
-                helpers.sets.add();
-            },
-            add: function(set) {
-                if (!set) {
-                    set = {
-                        title: "Untitled set"
-                    }
-                    helpers.model.hasChanged();
-                }
-                var sets_container = document.getElementById("sets-container");
-                sets_container.insertAdjacentHTML('beforeend', set_template(set));
-            },
-            serialize: function() {
-                var sets = [];
-                $("div.set-entry").each(function(id, set_entry) {
-                    var set = {
-                        title: set_entry.querySelector("input.set-title").value,
-                        tunes: []
-                    }
-                    var tunes = set_entry.querySelectorAll("div.tune-entry").forEach((tune, index) => {
-                        set.tunes.push(helpers.tunes.serializeTuneEntry(tune));
-                    });
-                    sets.push(set);
-                });
-                return sets;
-            },
-            deserialize: function() {
-                if(model.sets)
-                {
-                    model.sets.forEach(function(set) {
-                        helpers.sets.add(set);
-                    })
-                }
-            }
-        },
-        model: {
-            url: "https://api.jsonbin.io/v3/b/64f6f51e8d92e126ae67569e",
-            save: function() {
-                $("#save-btn")[0].disabled = true;
-                model.sets = helpers.sets.serialize();
-                model.tunes = helpers.tunes.serialize();
-                putJson(helpers.model.url, model);
-            },
-            hasChanged: function() {
-                $("#save-btn")[0].disabled = false;
-            },
-            load: function() {
-                getJson(helpers.model.url + "/latest").then(function(data) {
-                    model = data.record;
-                    helpers.sets.deserialize();
-                    helpers.tunes.deserialize();
-                });
-            }
-        }
-    }
+		var helpers = {
+			tunes: {
+				add: function (item)
+				{
+					if (typeof item !== 'object')
+					{
+						item = helpers.tunes.findById(item);
+					}
+					var tunes_container = document.getElementById("tunes-container");
+					tunes_container.insertAdjacentHTML('beforeend', tune_template(item));
+					helpers.model.hasChanged();
+				},
+				delete: function (element)
+				{
+					var tune_entry = $(element).closest("div.tune-entry");
+					tune_entry.remove();
+					helpers.model.hasChanged();
+				},
+				serialize: function ()
+				{
+					var tunes = [];
+					$("#tunes-container > div.tune-entry").each(function (id, element)
+					{
+						tunes.push(helpers.tunes.serializeTuneEntry(element));
+					});
+					return tunes;
+				},
+				serializeTuneEntry: function (element)
+				{
+					var tune_id = element.querySelector("p.tune-id").innerText;
+					return helpers.tunes.findById(tune_id);
+				},
+				findById(tune_id)
+				{
+					return tunes[tune_id];
+				},
+				deserialize: function ()
+				{
+					if (model.tunes)
+					{
+						model.tunes.forEach(function (tune)
+						{
+							helpers.tunes.add(tune);
+						});
+					}
+				}
+			},
+			sets: {
+				new: function ()
+				{
+					helpers.sets.add();
+				},
+				add: function (set)
+				{
+					if (!set)
+					{
+						set = {
+							title: "Untitled set"
+						}
+						helpers.model.hasChanged();
+					}
+					var sets_container = document.getElementById("sets-container");
+					sets_container.insertAdjacentHTML('beforeend', set_template(set));
+				},
+				serialize: function ()
+				{
+					var sets = [];
+					$("div.set-entry").each(function (id, set_entry)
+					{
+						var set = {
+							title: set_entry.querySelector("input.set-title").value,
+							tunes: []
+						}
+						var tunes = set_entry.querySelectorAll("div.tune-entry").forEach((tune, index) =>
+						{
+							set.tunes.push(helpers.tunes.serializeTuneEntry(tune));
+						});
+						sets.push(set);
+					});
+					return sets;
+				},
+				deserialize: function ()
+				{
+					if (model.sets)
+					{
+						model.sets.forEach(function (set)
+						{
+							helpers.sets.add(set);
+						})
+					}
+				}
+			},
+			model: {
+				url: "https://api.jsonbin.io/v3/b/64f6f51e8d92e126ae67569e",
+				save: function ()
+				{
+					$("#save-btn")[0].disabled = true;
+					model.sets = helpers.sets.serialize();
+					model.tunes = helpers.tunes.serialize();
+					putJson(helpers.model.url, model);
+				},
+				hasChanged: function ()
+				{
+					$("#save-btn")[0].disabled = false;
+				},
+				load: function ()
+				{
+					getJson(helpers.model.url + "/latest").then(function (data)
+					{
+						model = data.record;
+						helpers.sets.deserialize();
+						helpers.tunes.deserialize();
+					});
+				}
+			}
+		}
 
-    var dumpurl = "https://raw.githubusercontent.com/adactio/TheSession-data/master/json/";
-    var jsonFiles = ["tunes.json"];
-    getJson(dumpurl + jsonFiles[0])
-        .then(function(data) {
-            tunes = data.reduce((acc, t) => {
-                if (!acc[t.tune_id]) {
-                    acc[t.tune_id] = {
-                        id: t.tune_id,
-                        name: t.name,
-                        type: t.type,
-                        mode: t.mode
-                    }
-                }
-                return acc;
-            }, {});
+		var dumpurl = "https://raw.githubusercontent.com/adactio/TheSession-data/master/json/";
+		var jsonFiles = ["tunes.json"];
+		getJson(dumpurl + jsonFiles[0])
+			.then(function (data)
+			{
+				tunes = data.reduce((acc, t) =>
+				{
+					if (!acc[t.tune_id])
+					{
+						debugger;
+						acc[t.tune_id] = {
+							id: t.tune_id,
+							name: t.name,
+							type: t.type,
+							mode: t.mode,
+							abc: t.abc
+						}
+					}
+					return acc;
+				}, {});
 
-            var tunesOptions = Object.values(tunes).map(t => {
-                return {
-                    id: t.id,
-                    name: t.name,
-                    type: t.type,
-                    mode: t.mode
-                }
-            })
+				var tunesOptions = Object.values(tunes).map(t =>
+				{
+					return {
+						id: t.id,
+						name: t.name,
+						type: t.type,
+						mode: t.mode,
+						abc: t.abc
+					}
+				})
 
-            new TomSelect('#tunesBrowse', {
-                valueField: 'id',
-                labelField: 'name',
-                searchField: ['name'],
-                options: tunesOptions,
-                // custom rendering function for options
-                render: {
-                    option: function(item, escape) {
-                        return `<div class="py-2 d-flex">
+				new TomSelect('#tunesBrowse', {
+					valueField: 'id',
+					labelField: 'name',
+					searchField: ['name'],
+					options: tunesOptions,
+					// custom rendering function for options
+					render: {
+						option: function (item, escape)
+						{
+							return `<div class="py-2 d-flex">
                                 <div class="mb-1">
                                     <span class="h5">
-                                        ${ escape(item.name) }
+                                        ${escape(item.name)}
                                     </span>
                                 </div>
                             </div>`;
-                    }
-                },
-                onItemAdd: helpers.tunes.add
-            });
-        });
+						}
+					},
+					onItemAdd: helpers.tunes.add
+				});
+			});
 
-    $(function() {
-        helpers.model.load();
+		$(function ()
+		{
+			helpers.model.load();
 
-        $("#new-set-btn").on("click", helpers.sets.new);
-        $("#save-btn").on("click", helpers.model.save);
+			$("#new-set-btn").on("click", helpers.sets.new);
+			$("#save-btn").on("click", helpers.model.save);
 
-        var drake = dragula([document.getElementById('tunes-container')], {
-            isContainer: function(el) {
-                return el.classList.contains("set-tunes-container");
-            },
-            copy: function(el, source) {
-                return source.id === 'tunes-container';
-            }
-        });
-        drake.on("drop", function(el, target, source, sibling) {
-            helpers.model.hasChanged();
-        });
+			var drake = dragula([document.getElementById('tunes-container')], {
+				isContainer: function (el)
+				{
+					return el.classList.contains("set-tunes-container");
+				},
+				copy: function (el, source)
+				{
+					return source.id === 'tunes-container';
+				}
+			});
+			drake.on("drop", function (el, target, source, sibling)
+			{
+				helpers.model.hasChanged();
+			});
 
-    });
-    </script>
-    <script src="lib/ui.js"></script>
+		});
+	</script>
+	<script src="lib/ui.js"></script>
 </body>
 
 </html>
