@@ -3,145 +3,158 @@
  #layout,
  #main,
  #map {
-     height: 100%;
-     margin: 0;
-     font-family: sans-serif;
-     color: #444;
- }
-
- .logo {
-     letter-spacing: 0.05em;
-     color: #3e3e3e;
-     font-size: 1.2em;
-     font-weight: bold;
-     text-shadow: 0 1px 0 rgba(255, 255, 255, 0.25);
-     padding: 5px;
-     text-align: center;
-     background-color: #EEE;
-     border: solid 1px #cfcfcf;
-     font-family: serif;
+ 	height: 100%;
+ 	margin: 0;
+ 	font-family: sans-serif;
+ 	color: #444;
  }
 
  .ribbon {
-     border: 0.0625em dashed #999;
-     padding: 20px;
-     background-color: #E3E3E3;
+ 	border: 0.0625em dashed #999;
+ 	padding: 20px;
+ 	background-color: #E3E3E3;
  }
 
  .menu-item {
-     display: block;
-     -webkit-transition: all 0.2s ease-out;
-     -moz-transition: all 0.2s ease-out;
-     -ms-transition: all 0.2s ease-out;
-     -o-transition: all 0.2s ease-out;
-     transition: all 0.2s ease-out;
-     cursor: pointer;
+ 	display: block;
+ 	-webkit-transition: all 0.2s ease-out;
+ 	-moz-transition: all 0.2s ease-out;
+ 	-ms-transition: all 0.2s ease-out;
+ 	-o-transition: all 0.2s ease-out;
+ 	transition: all 0.2s ease-out;
+ 	cursor: pointer;
  }
 
  .menu-item:hover,
  .menu-item-selected {
-     background: #EEE;
+ 	background: #EEE;
  }
 
  #menu span {
-     padding: 10px;
-     margin-top: 10px;
-     display: block;
+ 	padding: 10px;
+ 	margin-top: 10px;
+ 	display: block;
  }
 
  #save-btn {
-     width: 100%;
+ 	width: 100%;
  }
 
  .menu-footer {
-     width: 100%;
-     box-sizing: border-box;
-     position: absolute;
-     padding: 10px;
-     bottom: 0;
-     left: 0;
+ 	width: 100%;
+ 	box-sizing: border-box;
+ 	position: absolute;
+ 	padding: 10px;
+ 	bottom: 0;
+ 	left: 0;
  }
 
  #save-btn {
-     margin-bottom: 10px;
+ 	margin-bottom: 10px;
  }
 
  .tab-header {
-     padding: 15px;
-     box-sizing: border-box;
+ 	padding: 15px;
+ 	box-sizing: border-box;
+ 	height: 60px;
+ 	color: #3e3e3e;
+ 	text-align: center;
+ 	background-color: #EEE;
+ 	border: solid 1px #cfcfcf;
+ }
+
+ .tab-header > * {
+	position: relative;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+ }
+
+ .tab-title {
+ 	font-family: serif;
+ 	font-size: 1.2em;
+ 	font-weight: bold;
+ 	letter-spacing: 0.05em;
+ 	text-shadow: 0 1px 0 rgba(255, 255, 255, 0.25);
+ }
+
+ .tab-header-sets > * {
+ 	display: inline-block;
  }
 
  #tunes {
-     box-shadow: 5px 0px 5px -5px rgba(0, 0, 0, 0.75);
-     height: 100%;
+ 	box-shadow: 5px 0px 5px -5px rgba(0, 0, 0, 0.75);
+ 	height: 100%;
  }
 
  #tunes-container {
-     overflow: scroll;
-     height: 100%;
+ 	overflow: scroll;
+ 	height: 100%;
  }
 
  .tune-entry {
-     padding: 1px 10px;
-     box-sizing: border-box;
-     background-color: lightblue;
-     margin: 10px;
+ 	padding: 1px 10px;
+ 	box-sizing: border-box;
+ 	background-color: lightblue;
+ 	margin: 10px;
  }
 
  .tune-mode {
-     font-weight: bold;
-     padding: 0 5px;
+ 	font-weight: bold;
+ 	padding: 0 5px;
  }
 
  .tune-entry-delete-btn {
-     float: right;
+ 	float: right;
  }
-.tune-entry-delete-btn:hover {
-     color: red;
-     cursor: pointer;
+
+ .tune-entry-delete-btn:hover {
+ 	color: red;
+ 	cursor: pointer;
  }
 
 
  .set-entry {
-     padding: 15px;
-     box-sizing: border-box;
-     background-color: lightgrey;
-     margin: 5px;
+ 	padding: 15px;
+ 	box-sizing: border-box;
+ 	background-color: lightgrey;
+ 	margin: 5px;
  }
 
  .set-tunes-container {
-     min-height: 50px;
+ 	min-height: 50px;
  }
 
  .button-success,
  .button-error,
  .button-warning,
  .button-secondary {
-     color: white;
-     border-radius: 4px;
-     text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+ 	color: white;
+ 	border-radius: 4px;
+ 	text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
  }
 
  .button-success {
-     background: rgb(28, 184, 65);
-     /* this is a green */
+ 	background: rgb(28, 184, 65);
+ 	/* this is a green */
  }
 
  .button-error {
-     background: rgb(202, 60, 60);
-     /* this is a maroon */
+ 	background: rgb(202, 60, 60);
+ 	/* this is a maroon */
  }
 
  .button-warning {
-     background: rgb(223, 117, 20);
-     /* this is an orange */
+ 	background: rgb(223, 117, 20);
+ 	/* this is an orange */
  }
 
  .button-secondary {
-     background: rgb(66, 184, 221);
-     /* this is a light blue */
+ 	background: rgb(66, 184, 221);
+ 	/* this is a light blue */
  }
 
  #sets-container {
-     margin: 10px;
+ 	margin: 10px;
  }
