@@ -111,9 +111,31 @@
 
  .tune-entry {
  	padding: 1px 10px;
- 	box-sizing: border-box;
  	background-color: lightblue;
  	margin: 10px;
+ 	border-radius: 8px;
+ 	border: solid 1px #00000022;
+ 	box-sizing: border-box;
+ 	-moz-box-sizing: border-box;
+ 	-webkit-box-sizing: border-box;
+ }
+
+ .tune-info {
+ 	display: flex;
+ 	text-transform: uppercase;
+ 	font-weight: bold;
+ 	font-size: small;
+ }
+
+ .tune-mode {
+ 	text-transform: capitalize;
+ }
+
+ .tune-abc {
+ 	white-space: nowrap;
+ 	overflow-x: clip;
+ 	font-weight: normal;
+ 	margin-left: 10px;
  }
 
  .tune-mode {
@@ -170,3 +192,52 @@
  	background: rgb(66, 184, 221);
  	/* this is a light blue */
  }
+
+ .tune-key-A {
+ 	background-color: #ffdd00;
+ }
+
+ .tune-key-B {
+ 	background-color: rgb(131 163 246);
+ }
+
+ .tune-key-C {
+ 	background-color: rgb(174, 30, 182);
+ }
+
+ .tune-key-D {
+ 	background-color: rgb(105 195 100);
+ }
+
+ .tune-key-E {
+ 	background-color: rgb(253, 175, 19);
+ }
+
+ .tune-key-F {
+ 	background-color: rgb(255 143 143);
+ }
+
+ .tune-key-G {
+ 	background-color: rgb(108 213 198);
+ }
+
+ /* .tune-mode-maj {
+	-webkit-box-shadow: inset -20px -20px 50px 18px rgba(255, 36, 36, 0.58);
+	box-shadow: inset -20px -20px 50px 18px rgba(255, 36, 36, 0.58);
+ }
+
+ .tune-mode-min {
+	-webkit-box-shadow: inset -20px -20px 50px 18px rgba(72, 36, 255, 0.58);
+	box-shadow: inset -20px -20px 50px 18px rgba(72, 36, 255, 0.58);
+ }
+
+
+ .tune-mode-mix {
+	-webkit-box-shadow: inset -20px -20px 50px 18px rgba(193, 36, 255, 0.731);
+	box-shadow: inset -20px -20px 50px 18px rgba(193, 36, 255, 0.731);
+ }
+
+ .tune-mode-dor {
+	-webkit-box-shadow: inset -20px -20px 50px 18px rgba(193, 36, 255, 0.731);
+	box-shadow: inset -20px -20px 50px 18px rgba(193, 36, 255, 0.731);
+ } */

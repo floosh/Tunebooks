@@ -51,10 +51,10 @@
 		</div>
 	</div>
 	<script id="tune-template" type="text/x-handlebars-template">
-        <div class="tune-entry">
+        <div class="tune-entry tune-key-{{key}} tune-mode-{{mode}}">
         <p hidden=true class="tune-id">{{id}}</p>
         <p>{{name}}<i class="fas fa-xmark tune-entry-delete-btn" onclick="helpers.tunes.delete(this)"></i></p>
-        <p><span class="tune-type">{{type}}</span><span class="tune-mode">{{mode}}</span><span class="tune-abc">{{abc}}</span></p>
+        <p class="tune-info"><span class="tune-type">{{type}}</span><span class="tune-mode">{{key}}{{mode}}</span><span class="tune-abc">{{abc}}</span></p>
       </div>
     </script>
 	<script id="set-template" type="text/x-handlebars-template">
@@ -158,6 +158,14 @@
 							helpers.tunes.add(tune);
 						});
 					}
+				},
+				transformMode: function(mode)
+				{
+					mode = mode.replace("major", "maj");
+					mode = mode.replace("minor", "min");
+					mode = mode.replace("mixolydian", "mix");
+					mode = mode.replace("dorian", "dor");
+					return mode;
 				}
 			},
 			sets: {
@@ -239,12 +247,12 @@
 				{
 					if (!acc[t.tune_id])
 					{
-						debugger;
 						acc[t.tune_id] = {
 							id: t.tune_id,
 							name: t.name,
 							type: t.type,
-							mode: t.mode,
+							key: t.mode[0],
+							mode: helpers.tunes.transformMode(t.mode.substring(1)),
 							abc: t.abc
 						}
 					}
