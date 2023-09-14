@@ -111,8 +111,7 @@
 
  .tune-entry {
  	padding: 1px 10px;
- 	background-color: lightblue;
- 	margin: 10px;
+ 	margin: 8px;
  	border-radius: 8px;
  	border: solid 1px #00000022;
  	box-sizing: border-box;
@@ -125,11 +124,17 @@
  	text-transform: uppercase;
  	font-weight: bold;
  	font-size: small;
-    white-space: nowrap;
+ 	white-space: nowrap;
+ 	margin-top: 5px;
  }
 
  .tune-mode {
  	text-transform: capitalize;
+ }
+
+ .tune-title {
+ 	font-weight: bold;
+ 	margin-bottom: 0;
  }
 
  .tune-abc {
@@ -152,12 +157,33 @@
  	cursor: pointer;
  }
 
+ #sets-container {
+ 	padding: 6px;
+ }
 
  .set-entry {
- 	padding: 15px;
+ 	padding: 10px;
+ 	border-radius: 8px;
+ 	border: solid 1px #00000022;
  	box-sizing: border-box;
- 	background-color: lightgrey;
- 	margin: 5px;
+ 	-moz-box-sizing: border-box;
+ 	-webkit-box-sizing: border-box;
+ 	background-color: #EEE;
+ }
+
+ .set-title {
+ 	margin: 8px;
+ 	border: none;
+ 	border-bottom: solid 1px #00000022;
+ 	background: none;
+ 	width: 95%;
+ 	font-weight: bold;
+ 	color: #777;
+ }
+
+ .set-entry-container {
+ 	padding: 6px;
+ 	box-sizing: border-box;
  }
 
  .set-tunes-container {
@@ -193,51 +219,48 @@
  	/* this is a light blue */
  }
 
- .tune-key-A {
- 	background-color: #ffdd00;
+ .tune-key-A.tune-mode-maj,
+ .tune-key-A.tune-mode-mix {
+ 	background-color: #fff575;
+ }
+
+ .tune-key-A.tune-mode-min,
+ .tune-key-A.tune-mode-dor {
+ 	background-color: #ffeb85;
+ }
+
+ .tune-key-D.tune-mode-maj,
+ .tune-key-D.tune-mode-mix {
+ 	background-color: rgb(175 232 172);
+ }
+
+ .tune-key-D.tune-mode-min,
+ .tune-key-D.tune-mode-dor {
+ 	background-color: rgb(191 220 189);
+ }
+
+ .tune-key-G.tune-mode-maj,
+ .tune-key-G.tune-mode-mix {
+ 	background-color: rgb(178 241 232);
+ }
+
+ .tune-key-G.tune-mode-min,
+ .tune-key-G.tune-mode-dor {
+ 	background-color: rgb(187 229 236);
  }
 
  .tune-key-B {
- 	background-color: rgb(131 163 246);
+ 	background-color: rgb(184 204 255);
  }
 
  .tune-key-C {
- 	background-color: rgb(174, 30, 182);
- }
-
- .tune-key-D {
- 	background-color: rgb(105 195 100);
+ 	background-color: rgb(235 208 255);
  }
 
  .tune-key-E {
- 	background-color: rgb(253, 175, 19);
+ 	background-color: rgb(254 207 142);
  }
 
  .tune-key-F {
- 	background-color: rgb(255 143 143);
+ 	background-color: rgb(255 179 179);
  }
-
- .tune-key-G {
- 	background-color: rgb(108 213 198);
- }
-
- /* .tune-mode-maj {
-	-webkit-box-shadow: inset -20px -20px 50px 18px rgba(255, 36, 36, 0.58);
-	box-shadow: inset -20px -20px 50px 18px rgba(255, 36, 36, 0.58);
- }
-
- .tune-mode-min {
-	-webkit-box-shadow: inset -20px -20px 50px 18px rgba(72, 36, 255, 0.58);
-	box-shadow: inset -20px -20px 50px 18px rgba(72, 36, 255, 0.58);
- }
-
-
- .tune-mode-mix {
-	-webkit-box-shadow: inset -20px -20px 50px 18px rgba(193, 36, 255, 0.731);
-	box-shadow: inset -20px -20px 50px 18px rgba(193, 36, 255, 0.731);
- }
-
- .tune-mode-dor {
-	-webkit-box-shadow: inset -20px -20px 50px 18px rgba(193, 36, 255, 0.731);
-	box-shadow: inset -20px -20px 50px 18px rgba(193, 36, 255, 0.731);
- } */

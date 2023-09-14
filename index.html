@@ -51,22 +51,26 @@
 		</div>
 	</div>
 	<script id="tune-template" type="text/x-handlebars-template">
-        <div class="tune-entry tune-key-{{key}} tune-mode-{{mode}}">
-        <p hidden=true class="tune-id">{{id}}</p>
-        <p>{{name}}<i class="fas fa-xmark tune-entry-delete-btn" onclick="helpers.tunes.delete(this)"></i></p>
-        <p class="tune-info"><span class="tune-type">{{type}}</span><span class="tune-mode">{{key}}{{mode}}</span><span class="tune-abc">{{abc}}</span></p>
-      </div>
-    </script>
+		<div class="tune-entry tune-key-{{key}} tune-mode-{{mode}}">
+			<p hidden=true class="tune-id">{{id}}</p>
+			<p class="tune-title">{{name}}<i class="fas fa-xmark tune-entry-delete-btn"
+					onclick="helpers.tunes.delete(this)"></i></p>
+			<p class="tune-info"><span class="tune-type">{{type}}</span><span class="tune-mode">{{key}}{{mode}}</span><span
+					class="tune-abc">{{abc}}</span></p>
+		</div>
+	</script>
 	<script id="set-template" type="text/x-handlebars-template">
-        <div class="set-entry pure-u-1-3">
-        <input class= "set-title" value="{{title}}"></input>
-        <div class="set-tunes-container">
-            {{#each tunes}}
-              {{> tune_template}}
-            {{/each}}
-        </div>
-    </div>
-    </script>
+		<div class="set-entry-container pure-u-1-3">
+			<div class="set-entry">
+				<input class="set-title" value="{{title}}"></input>
+				<div class="set-tunes-container">
+					{{#each tunes}}
+					{{> tune_template}}
+					{{/each}}
+				</div>
+			</div>
+		</div>
+	</script>
 	<script>
 		var tunes;
 		var model = { tunes: [], sets: [] };
@@ -159,7 +163,7 @@
 						});
 					}
 				},
-				transformMode: function(mode)
+				transformMode: function (mode)
 				{
 					mode = mode.replace("major", "maj");
 					mode = mode.replace("minor", "min");
