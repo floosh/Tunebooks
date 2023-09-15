@@ -126,6 +126,7 @@
  	font-size: small;
  	white-space: nowrap;
  	margin-top: 5px;
+	overflow: clip;
  }
 
  .tune-mode {
@@ -138,7 +139,6 @@
  }
 
  .tune-abc {
- 	overflow-x: clip;
  	font-weight: normal;
  	margin-left: 10px;
  }
