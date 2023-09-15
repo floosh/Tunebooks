@@ -71,7 +71,7 @@
  	transform: translateY(-50%);
  }
 
- p.tab-title {
+ p.tab-title, a.header-item {
  	font-family: serif;
  	font-size: 1.2em;
  	font-weight: bold;
@@ -91,7 +91,6 @@
  #tunes,
  #sets {
  	height: 100%;
- 	display: flex;
  	flex-direction: column;
  }
 

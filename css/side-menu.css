@@ -193,52 +193,30 @@ how it works:
 small screens.
 */
 
-.menu-link {
-    position: fixed;
-    display: block;
-    /* show this only on small screens */
-    top: 0;
-    left: 0;
-    /* "#menu width" */
-    background: #000;
-    background: rgba(100, 100, 100, 0.8);
-    font-size: 10px;
-    /* change this value to increase/decrease button size */
-    z-index: 1000;
-    width: 2em;
-    height: auto;
-    padding: 2.1em 1.6em;
+#header {
+	display: flex;
+	background-color: #EEE;
+	border-bottom: solid 1px #cfcfcf;
 }
 
-.menu-link:hover,
-.menu-link:focus {
-    background: #646464;
+.header-item {
+	padding-left: 1em;
+	display: inline-block;
+	text-align: center;
 }
 
-.menu-link span {
-    position: relative;
-    display: block;
+.header-menu {
+	display: inline-block;
+	width: 3.4em;
+	text-align: center;
+ 	padding-top: 1em;
+	background-color: #888;
+	color: white;
 }
 
-.menu-link span,
-.menu-link span:before,
-.menu-link span:after {
-    background-color: #fff;
-    width: 100%;
-    height: 0.2em;
+.header-menu:hover {
+	background-color: #666;
 }
-
-.menu-link span:before,
-.menu-link span:after {
-    position: absolute;
-    margin-top: -0.6em;
-    content: " ";
-}
-
-.menu-link span:after {
-    margin-top: 0.6em;
-}
-
 
 
 /* -- Responsive Styles (Media Queries) ------------------------------------- */
@@ -248,7 +226,7 @@ small screens.
 Hides the menu at `48em`, but modify this based on your app's needs.
 */
 
-@media (min-width: 72em) {
+@media (min-width: 64em) {
 
     .header,
     .content {
@@ -274,9 +252,22 @@ Hides the menu at `48em`, but modify this based on your app's needs.
     #layout.active .menu-link {
         left: 300px;
     }
+
+	#header {
+		display: none;
+	}
+
+	#sets {
+		display: flex;
+	}
+
+	#tunes {
+		display: flex;
+	}
+
 }
 
-@media (max-width: 48em) {
+@media (max-width: 64em) {
     /* Only apply this when the window is small. Otherwise, the following
     case results in extra padding on the left:
         * Make the window small.
@@ -287,4 +278,8 @@ Hides the menu at `48em`, but modify this based on your app's needs.
         position: relative;
         left: 300px;
     }
+
+	#sets {
+		display: none;
+	}
 }
