@@ -122,7 +122,6 @@
  	display: flex;
  	text-transform: uppercase;
  	font-weight: bold;
- 	font-size: small;
  	white-space: nowrap;
  	margin-top: 5px;
 	overflow: clip;
@@ -135,6 +134,7 @@
  .tune-title {
  	font-weight: bold;
  	margin-bottom: 0;
+	font-size: larger;
  }
 
  .tune-abc {
