@@ -65,7 +65,8 @@
 	<script id="set-template" type="text/x-handlebars-template">
 		<div class="set-entry-container pure-u-xl-1-3 pure-u-md-1-2 pure-u-1">
 			<div class="set-entry">
-				<input class="set-title" value="{{title}}"></input>
+				<p class="set-title-bar"><input class="set-title" value="{{title}}"></input><i class="fas fa-xmark set-entry-delete-btn"
+					onclick="helpers.sets.delete(this)"></i></p>
 				<div class="set-tunes-container">
 					{{#each tunes}}
 					{{> tune_template}}
@@ -157,6 +158,12 @@
 					}
 					var sets_container = document.getElementById("sets-container");
 					sets_container.insertAdjacentHTML('beforeend', set_template(set));
+				},
+				delete: function (element)
+				{
+					var set_entry = $(element).closest("div.set-entry-container");
+					set_entry.remove();
+					helpers.model.hasChanged();
 				},
 				serialize: function ()
 				{

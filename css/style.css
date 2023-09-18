@@ -90,6 +90,7 @@
 
  #tunes,
  #sets {
+	display: flex;
  	height: 100%;
  	flex-direction: column;
  }
@@ -146,11 +147,11 @@
  	padding: 0 5px;
  }
 
- .tune-entry-delete-btn {
+ .tune-entry-delete-btn, .set-entry-delete-btn {
  	float: right;
  }
 
- .tune-entry-delete-btn:hover {
+ .tune-entry-delete-btn:hover, .set-entry-delete-btn:hover {
  	color: red;
  	cursor: pointer;
  }
@@ -177,6 +178,12 @@
  	width: 95%;
  	font-weight: bold;
  	color: #777;
+ }
+
+ .set-title-bar {
+	display: flex;
+	align-items: baseline;
+	margin: 0px;
  }
 
  .set-entry-container {
