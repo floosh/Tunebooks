@@ -86,40 +86,6 @@
 
 		Handlebars.registerPartial("tune_template", tune_template);
 
-
-		function getJson(url)
-		{
-			return new Promise((resolve, reject) =>
-			{
-				fetch(url).then(response =>
-				{
-					resolve(response.json());
-				});
-			});
-		}
-
-		function putJson(url, data)
-		{
-			return new Promise((resolve, reject) =>
-			{
-				fetch(url, {
-					method: "PUT",
-					mode: "cors",
-					cache: "no-cache",
-					credentials: "same-origin",
-					headers: {
-						"Content-Type": "application/json"
-					},
-					redirect: "follow",
-					referrerPolicy: "no-referrer",
-					body: JSON.stringify(data),
-				}).then(response =>
-				{
-					resolve(response.json());
-				});
-			});
-		}
-
 		var helpers = {
 			tunes: {
 				add: function (item)
@@ -227,7 +193,7 @@
 					$("#save-btn")[0].disabled = true;
 					model.sets = helpers.sets.serialize();
 					model.tunes = helpers.tunes.serialize();
-					putJson(helpers.model.url, model);
+					helpers.json.put(helpers.model.url, model);
 				},
 				hasChanged: function ()
 				{
@@ -235,7 +201,7 @@
 				},
 				load: function ()
 				{
-					getJson(helpers.model.url + "/latest").then(function (data)
+					helpers.json.get(helpers.model.url + "/latest").then(function (data)
 					{
 						model = data.record;
 						helpers.sets.deserialize();
@@ -244,20 +210,110 @@
 				}
 			},
 			ui: {
-				showTunes: function() {
-					$("#sets").hide();
-					$("#tunes").show();
+				showTunes: function ()
+				{
+					$("#tunes").css("display", "flex");
 				},
-				showSets: function() {
-					$("#tunes").hide();
-					$("#sets").show();
+				showSets: function ()
+				{
+					$("#tunes").css("display", "none");
+				},
+				isMobileView: function ()
+				{
+					return window.matchMedia("(max-width: 64em)").matches;
+				}
+			},
+			json: {
+				get: function (url)
+				{
+					return new Promise((resolve, reject) =>
+					{
+						fetch(url).then(response =>
+						{
+							resolve(response.json());
+						});
+					});
+				},
+				put: function (url, data)
+				{
+					return new Promise((resolve, reject) =>
+					{
+						fetch(url, {
+							method: "PUT",
+							mode: "cors",
+							cache: "no-cache",
+							credentials: "same-origin",
+							headers: {
+								"Content-Type": "application/json"
+							},
+							redirect: "follow",
+							referrerPolicy: "no-referrer",
+							body: JSON.stringify(data),
+						}).then(response =>
+						{
+							resolve(response.json());
+						});
+					});
 				}
 			}
 		}
 
+		function initTunesSelect()
+		{
+			var tunesOptions = Object.values(tunes).map(t =>
+			{
+				return {
+					id: t.id,
+					name: t.name,
+					type: t.type,
+					mode: t.mode,
+					abc: t.abc
+				}
+			})
+
+			new TomSelect('#tunesBrowse', {
+				valueField: 'id',
+				labelField: 'name',
+				searchField: ['name'],
+				options: tunesOptions,
+				// custom rendering function for options
+				render: {
+					option: function (item, escape)
+					{
+						return `<div class="py-2 d-flex">
+                                <div class="mb-1">
+                                    <span class="h5">
+                                        ${escape(item.name)}
+                                    </span>
+                                </div>
+                            </div>`;
+					}
+				},
+				onItemAdd: helpers.tunes.add
+			});
+		}
+
+		function initDragNDrop()
+		{
+			var drake = dragula([document.getElementById('tunes-container')], {
+				isContainer: function (el)
+				{
+					return el.classList.contains("set-tunes-container");
+				},
+				copy: function (el, source)
+				{
+					return source.id === 'tunes-container';
+				}
+			});
+			drake.on("drop", function (el, target, source, sibling)
+			{
+				helpers.model.hasChanged();
+			});
+		}
+
 		var dumpurl = "https://raw.githubusercontent.com/adactio/TheSession-data/master/json/";
 		var jsonFiles = ["tunes.json"];
-		getJson(dumpurl + jsonFiles[0])
+		helpers.json.get(dumpurl + jsonFiles[0])
 			.then(function (data)
 			{
 				tunes = data.reduce((acc, t) =>
@@ -275,38 +331,7 @@
 					}
 					return acc;
 				}, {});
-
-				var tunesOptions = Object.values(tunes).map(t =>
-				{
-					return {
-						id: t.id,
-						name: t.name,
-						type: t.type,
-						mode: t.mode,
-						abc: t.abc
-					}
-				})
-
-				new TomSelect('#tunesBrowse', {
-					valueField: 'id',
-					labelField: 'name',
-					searchField: ['name'],
-					options: tunesOptions,
-					// custom rendering function for options
-					render: {
-						option: function (item, escape)
-						{
-							return `<div class="py-2 d-flex">
-                                <div class="mb-1">
-                                    <span class="h5">
-                                        ${escape(item.name)}
-                                    </span>
-                                </div>
-                            </div>`;
-						}
-					},
-					onItemAdd: helpers.tunes.add
-				});
+				initTunesSelect();
 			});
 
 		$(function ()
@@ -318,22 +343,24 @@
 			$("#menuTunes").on("click", helpers.ui.showTunes);
 			$("#menuSets").on("click", helpers.ui.showSets);
 
-			var drake = dragula([document.getElementById('tunes-container')], {
-				isContainer: function (el)
-				{
-					return el.classList.contains("set-tunes-container");
-				},
-				copy: function (el, source)
-				{
-					return source.id === 'tunes-container';
-				}
-			});
-			drake.on("drop", function (el, target, source, sibling)
+			if (!helpers.ui.isMobileView())
 			{
-				helpers.model.hasChanged();
-			});
-
+				initDragNDrop();
+			}
 		});
+
+		$(window).on('resize', function ()
+		{
+			if (helpers.ui.isMobileView())
+			{
+
+			}
+			else
+			{
+				helpers.ui.showTunes();
+			}
+		});
+
 	</script>
 	<script src="lib/ui.js"></script>
 </body>
