@@ -52,12 +52,13 @@
 				<div id="sets-container" class=pure-g></div>
 			</div>
 		</div>
+		<div id="popup-container"></div>
 	</div>
 	<script id="tune-template" type="text/x-handlebars-template">
 		<div class="tune-entry tune-key-{{key}} tune-mode-{{mode}}">
-			<p hidden=true class="tune-id">{{id}}</p>
-			<p class="tune-title">{{name}}<i class="fas fa-xmark tune-entry-delete-btn"
-					onclick="helpers.tunes.delete(this)"></i></p>
+			<p class="tune-json-data" hidden="true">{{json this}}</p>
+			<p class="tune-title">{{name}}<i class="fa-solid fa-pen-to-square tune-entry-delete-btn"
+					onclick="helpers.tunes.edit(this)"></i></p>
 			<p class="tune-info"><span class="tune-type">{{type}}</span><span class="tune-mode">{{key}}{{mode}}</span><span
 					class="tune-abc">{{abc}}</span></p>
 		</div>
@@ -78,17 +79,73 @@
 			</div>
 		</div>
 	</script>
+	<script id="tune-entry-popup-template" type="text/x-handlebars-template">
+		<div id="tune-entry-popup-background">
+			<div id="tune-entry-popup">
+				<form class="pure-form pure-form-stacked">
+					<fieldset>
+						<legend class="tune-title">{{name}}</legend>
+						<div class="pure-g">
+							<div class="pure-control-group pure-form-aligned pure-u-1-2">
+								<label>Type</label>
+								<select id="tune-entry-popup-type" name="type">
+									{{#select type}}
+									<option value="jig">jig</option>
+									<option value="reel">reel</option>
+									<option value="slip jig">slip jig</option>
+									<option value="hornpipe">hornpipe</option>
+									<option value="polka">polka</option>
+									<option value="slide">slide</option>
+									<option value="waltz">waltz</option>
+									<option value="barndance">barndance</option>
+									<option value="strathspey">strathspey</option>
+									<option value="three-two">three-two</option>
+									<option value="mazurka">mazurka</option>
+									<option value="march">march</option>
+									{{/select}}
+								</select>
+							</div>
+							<div class="pure-control-group pure-form-aligned pure-u-1-2">
+								<label>Key/Mode</label>
+								<select id="tune-entry-popup-key" value="{{key}}">
+									{{#select key}}
+									<option value="A">A</option>
+									<option value="B">B</option>
+									<option value="C">C</option>
+									<option value="D">D</option>
+									<option value="E">E</option>
+									<option value="F">F</option>
+									<option value="G">G</option>
+									{{/select}}
+								</select>
+								<select id="tune-entry-popup-mode" value ="{{mode}}">
+									{{#select mode}}
+									<option value="maj">maj</option>
+									<option value="min">min</option>
+									<option value="dor">dor</option>
+									<option value="mix">mix</option>
+									{{/select}}
+								</select>
+							</div>
+							<div class="pure-control-group pure-u-1">
+								<label>ABC</label>
+								<textarea id="tune-entry-popup-abc" id="tune-select-mode" rows="5" style="width: 100%;">{{abc}}</textarea>
+							</div>
+							<br/>
+							<div class="pure-control-group pure-u-1" style="margin-top: 10px;">
+								<button class="pure-button button-warning" onclick="helpers.popup.actionDelete()">Delete</button>
+								<button class="pure-button" style="float: right;" onclick="helpers.popup.close()">Cancel</button>
+								<button class="pure-button pure-button-primary" style="float: right; margin-right: 5px;" onclick="helpers.popup.actionSave()">Save</button>
+							</div>
+						</div>
+					</fieldset>
+				</form>
+			</div>
+		</div>
+	</script>
 	<script>
-		var tunes;
+		var tunes, templates, tune_entry_in_edit_mode;
 		var model = { tunes: [], sets: [] };
-
-		var templates = ["tune-template", "set-template", "tune-template-browse"]
-						.reduce((acc, val, index) => {
-							acc[val] = Handlebars.compile(document.getElementById(val).innerHTML)
-							return acc;
-						}, {});
-
-		Handlebars.registerPartial("tune_template", templates["tune-template"]);
 
 		var helpers = {
 			tunes: {
@@ -108,6 +165,12 @@
 					tune_entry.remove();
 					helpers.model.hasChanged();
 				},
+				edit: function (element)
+				{
+					tune_entry_in_edit_mode = $(element).closest("div.tune-entry");
+					var tune_to_edit = helpers.tunes.serializeTuneEntry(tune_entry_in_edit_mode);
+					helpers.popup.show(tune_to_edit);
+				},
 				serialize: function ()
 				{
 					var tunes = [];
@@ -119,8 +182,7 @@
 				},
 				serializeTuneEntry: function (element)
 				{
-					var tune_id = element.querySelector("p.tune-id").innerText;
-					return helpers.tunes.findById(tune_id);
+					return JSON.parse($(element).children("p.tune-json-data")[0].innerText);
 				},
 				findById(tune_id)
 				{
@@ -233,6 +295,31 @@
 					return window.matchMedia("(max-width: 64em)").matches;
 				}
 			},
+			popup: {
+				show: function (tune)
+				{
+					$("#popup-container").html(templates["tune-entry-popup-template"](tune));
+				},
+				close: function ()
+				{
+					$("#popup-container").html("");
+				},
+				actionDelete: function ()
+				{
+					helpers.popup.close();
+					helpers.tunes.delete(tune_entry_in_edit_mode);
+				},
+				actionSave: function ()
+				{
+					var tune = helpers.tunes.serializeTuneEntry(tune_entry_in_edit_mode);
+					tune.type = $("#tune-entry-popup-type").val();
+					tune.key = $("#tune-entry-popup-key").val();
+					tune.mode = $("#tune-entry-popup-mode").val();
+					tune.abc = $("#tune-entry-popup-abc").val();
+					tune_entry_in_edit_mode.replaceWith(templates["tune-template"](tune));
+					helpers.popup.close();
+				}
+			},
 			json: {
 				get: function (url)
 				{
@@ -314,6 +401,30 @@
 				helpers.model.hasChanged();
 			});
 		}
+
+		function initHandlebars()
+		{
+			templates = ["tune-template", "set-template", "tune-template-browse", "tune-entry-popup-template"]
+				.reduce((acc, val, index) =>
+				{
+					acc[val] = Handlebars.compile(document.getElementById(val).innerHTML)
+					return acc;
+				}, {});
+
+			Handlebars.registerPartial("tune_template", templates["tune-template"]);
+			Handlebars.registerHelper('select', function (value, options)
+			{
+				var $el = $('<select />').html(options.fn(this));
+				$el.find('[value="' + value + '"]').attr({ 'selected': 'selected' });
+				return $el.html();
+			});
+			Handlebars.registerHelper('json', function (context)
+			{
+				return JSON.stringify(context);
+			});
+		}
+
+		initHandlebars();
 
 		var dumpurl = "https://raw.githubusercontent.com/adactio/TheSession-data/master/json/";
 		var jsonFiles = ["tunes.json"];
