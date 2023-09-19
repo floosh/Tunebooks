@@ -140,6 +140,7 @@
 
  .tune-abc {
  	margin-left: 10px;
+	text-transform: none;
  }
 
  .tune-mode {
@@ -194,6 +195,10 @@
  .set-tunes-container {
  	min-height: 50px;
  }
+
+.tune-browse-entry {
+	text-align: left;
+}
 
  .button-success,
  .button-error,
