@@ -43,7 +43,17 @@
 				<div class="tab-header">
 					<select id="tunesBrowse" placeholder="Search a tune..." hidden="true"></select>
 				</div>
-				<div id="tunes-container"></div>
+				<div id="tunes-container">
+					<div id="tunes-filter">
+						<p onclick="helpers.ui.toggleTuneType('all')">All</p>
+						<p onclick="helpers.ui.toggleTuneType('reel')">Reels</p>
+						<p onclick="helpers.ui.toggleTuneType(['jig', 'slipjig'])">Jigs</p>
+						<p onclick="helpers.ui.toggleTuneType('polka')">Polkas</p>
+						<p onclick="helpers.ui.toggleTuneType('hornpipe')">Hornpipes</p>
+						<p onclick="helpers.ui.toggleTuneType(['slide', 'waltz', 'barndance', 'strathspey', 'three-two', 'mazurka', 'march'])">
+							Others</p>
+					</div>
+				</div>
 			</div>
 			<div id="sets" class="pure-u-xl-3-4 pure-u-lg-2-3 pure-u-1">
 				<div class="tab-header tab-header-sets">
@@ -55,7 +65,7 @@
 		<div id="popup-container"></div>
 	</div>
 	<script id="tune-template" type="text/x-handlebars-template">
-		<div class="tune-id-{{id}} tune-entry tune-key-{{key}} tune-mode-{{mode}}">
+		<div class="tune-id-{{id}} tune-entry tune-type-{{classify type}} tune-key-{{key}} tune-mode-{{mode}}">
 			<p class="tune-json-data" hidden="true">{{json this}}</p>
 			<p class="tune-title">{{name}}<i class="fa-solid fa-pen-to-square tune-entry-delete-btn"
 					onclick="helpers.tunes.edit(this)"></i></p>
@@ -296,11 +306,13 @@
 				{
 					return window.matchMedia("(max-width: 64em)").matches;
 				},
-				highlightUsedtunes: function()
+				highlightUsedtunes: function ()
 				{
-					$("#tunes-container>.tune-entry").each((id, tune_entry) => {
-						var tune_id_class = tune_entry.classList[0];
-						if ($('.'+tune_id_class).length > 1)
+					$("#tunes-container>.tune-entry").each((id, tune_entry) =>
+					{
+						var same_tunes = $('.' + tune_entry.classList[0]);
+						same_tunes.removeClass("tune-in-a-set");
+						if (same_tunes.length > 1)
 						{
 							tune_entry.classList.add("tune-in-a-set");
 						}
@@ -309,6 +321,22 @@
 							tune_entry.classList.remove("tune-in-a-set");
 						}
 					})
+				},
+				toggleTuneType: function (type)
+				{
+					if (type === "all")
+					{
+						$("#tunes-container>.tune-entry").show();
+					}
+					else
+					{
+						$("#tunes-container>.tune-entry").hide();
+						type = Array.isArray(type) ? type : [type];
+						for (var t of type)
+						{
+							$("#tunes-container>.tune-type-" + t).show();
+						}
+					}
 				}
 			},
 			popup: {
@@ -407,6 +435,15 @@
 				{
 					return el.classList.contains("set-tunes-container");
 				},
+				moves: function (el, source, handle, sibling)
+				{
+					return $(el).hasClass("tune-entry");
+				},
+				accepts: function (el, target, source, sibling)
+				{
+					return $(target).hasClass("set-tunes-container")
+						|| (source.id === 'tunes-container' && target.id === 'tunes-container');
+				},
 				copy: function (el, source)
 				{
 					return source.id === 'tunes-container';
@@ -414,7 +451,10 @@
 			});
 			drake.on("drop", function (el, target, source, sibling)
 			{
-				helpers.model.hasChanged();
+				if (target)
+				{
+					helpers.model.hasChanged();
+				}
 			});
 		}
 
@@ -437,6 +477,10 @@
 			Handlebars.registerHelper('json', function (context)
 			{
 				return JSON.stringify(context);
+			});
+			Handlebars.registerHelper('classify', function (context)
+			{
+				return context.replace(/\s/g, "");
 			});
 		}
 
