@@ -71,7 +71,8 @@
  	transform: translateY(-50%);
  }
 
- p.tab-title, a.header-item {
+ p.tab-title,
+ a.header-item {
  	font-family: serif;
  	font-size: 1.2em;
  	font-weight: bold;
@@ -90,7 +91,7 @@
 
  #tunes,
  #sets {
-	display: flex;
+ 	display: flex;
  	height: 100%;
  	flex-direction: column;
  }
@@ -125,8 +126,9 @@
  	font-weight: bold;
  	white-space: nowrap;
  	margin-top: 5px;
-	overflow: clip;
-	font-size: smaller;
+ 	overflow: clip;
+ 	font-size: smaller;
+ 	opacity: 1;
  }
 
  .tune-mode {
@@ -136,11 +138,12 @@
  .tune-title {
  	font-weight: bold;
  	margin-bottom: 0;
+ 	opacity: 1;
  }
 
  .tune-abc {
  	margin-left: 10px;
-	text-transform: none;
+ 	text-transform: none;
  }
 
  .tune-mode {
@@ -148,14 +151,20 @@
  	padding: 0 5px;
  }
 
- .tune-entry-delete-btn, .set-entry-delete-btn {
+ .tune-entry-delete-btn,
+ .set-entry-delete-btn {
  	float: right;
  }
 
- .tune-entry-delete-btn:hover, .set-entry-delete-btn:hover {
+ .tune-entry-delete-btn:hover,
+ .set-entry-delete-btn:hover {
  	color: red;
  	cursor: pointer;
  }
+
+ .tune-in-a-set {
+	opacity: 0.7;
+  }
 
  #sets-container {
  	padding: 3px;
@@ -182,9 +191,9 @@
  }
 
  .set-title-bar {
-	display: flex;
-	align-items: baseline;
-	margin: 0px;
+ 	display: flex;
+ 	align-items: baseline;
+ 	margin: 0px;
  }
 
  .set-entry-container {
@@ -196,34 +205,41 @@
  	min-height: 50px;
  }
 
-.tune-browse-entry {
-	text-align: left;
-}
+ .tune-browse-entry {
+ 	text-align: left;
+ }
 
-#tune-entry-popup {
-	position: relative;
-    left: 50%;
-    top: 40%;
-    transform: translate(-50%, -50%);
-    background: white;
-    border: 1px solid;
-    padding: 20px;
-	border-radius: 8px;
-	min-width: 20em;
-	max-width: 30em;
-}
+ #tune-entry-popup {
+ 	position: relative;
+ 	left: 50%;
+ 	top: 40%;
+ 	transform: translate(-50%, -50%);
+ 	background: white;
+ 	border: 1px solid;
+ 	padding: 20px;
+ 	border-radius: 8px;
+ 	min-width: 20em;
+ 	max-width: 30em;
+ }
 
-#tune-entry-popup-background {
-  position: fixed; /* Stay in place */
-  z-index: 1; /* Sit on top */
-  left: 0;
-  top: 0;
-  width: 100%; /* Full width */
-  height: 100%; /* Full height */
-  overflow: auto; /* Enable scroll if needed */
-  background-color: rgb(0,0,0); /* Fallback color */
-  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-}
+ #tune-entry-popup-background {
+ 	position: fixed;
+ 	/* Stay in place */
+ 	z-index: 1;
+ 	/* Sit on top */
+ 	left: 0;
+ 	top: 0;
+ 	width: 100%;
+ 	/* Full width */
+ 	height: 100%;
+ 	/* Full height */
+ 	overflow: auto;
+ 	/* Enable scroll if needed */
+ 	background-color: rgb(0, 0, 0);
+ 	/* Fallback color */
+ 	background-color: rgba(0, 0, 0, 0.4);
+ 	/* Black w/ opacity */
+ }
 
  .button-success,
  .button-error,
@@ -254,48 +270,61 @@
  	/* this is a light blue */
  }
 
+ :root {
+    --color-A:#fff575;;
+    --color-Am:#ffeb85;
+    --color-B:rgb(184 204 255);
+    --color-C:rgb(235 208 255);
+    --color-D:rgb(175 232 172);
+    --color-Dm:rgb(191 220 189);
+    --color-E:rgb(254 207 142);
+    --color-F:rgb(255 179 179);
+    --color-G:rgb(178 241 232);
+    --color-Gm:rgb(187 229 236);
+}
+
  .tune-key-A.tune-mode-maj,
  .tune-key-A.tune-mode-mix {
- 	background-color: #fff575;
+ 	background-color: var(--color-A);
  }
 
  .tune-key-A.tune-mode-min,
  .tune-key-A.tune-mode-dor {
- 	background-color: #ffeb85;
+ 	background-color: var(--color-Am);
  }
 
  .tune-key-D.tune-mode-maj,
  .tune-key-D.tune-mode-mix {
- 	background-color: rgb(175 232 172);
+ 	background-color: var(--color-D);
  }
 
  .tune-key-D.tune-mode-min,
  .tune-key-D.tune-mode-dor {
- 	background-color: rgb(191 220 189);
+ 	background-color: var(--color-Dm);
  }
 
  .tune-key-G.tune-mode-maj,
  .tune-key-G.tune-mode-mix {
- 	background-color: rgb(178 241 232);
+ 	background-color: var(--color-G);
  }
 
  .tune-key-G.tune-mode-min,
  .tune-key-G.tune-mode-dor {
- 	background-color: rgb(187 229 236);
+ 	background-color: var(--color-Gm);
  }
 
  .tune-key-B {
- 	background-color: rgb(184 204 255);
+ 	background-color: var(--color-B);
  }
 
  .tune-key-C {
- 	background-color: rgb(235 208 255);
+ 	background-color: var(--color-C);
  }
 
  .tune-key-E {
- 	background-color: rgb(254 207 142);
+ 	background-color: var(--color-E);
  }
 
  .tune-key-F {
- 	background-color: rgb(255 179 179);
+ 	background-color: var(--color-F);
  }

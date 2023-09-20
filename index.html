@@ -55,7 +55,7 @@
 		<div id="popup-container"></div>
 	</div>
 	<script id="tune-template" type="text/x-handlebars-template">
-		<div class="tune-entry tune-key-{{key}} tune-mode-{{mode}}">
+		<div class="tune-id-{{id}} tune-entry tune-key-{{key}} tune-mode-{{mode}}">
 			<p class="tune-json-data" hidden="true">{{json this}}</p>
 			<p class="tune-title">{{name}}<i class="fa-solid fa-pen-to-square tune-entry-delete-btn"
 					onclick="helpers.tunes.edit(this)"></i></p>
@@ -197,6 +197,7 @@
 							helpers.tunes.add(tune);
 						});
 					}
+					helpers.ui.highlightUsedtunes();
 				},
 				transformMode: function (mode)
 				{
@@ -270,6 +271,7 @@
 				hasChanged: function ()
 				{
 					$("#save-btn")[0].disabled = false;
+					helpers.ui.highlightUsedtunes();
 				},
 				load: function ()
 				{
@@ -293,6 +295,20 @@
 				isMobileView: function ()
 				{
 					return window.matchMedia("(max-width: 64em)").matches;
+				},
+				highlightUsedtunes: function()
+				{
+					$("#tunes-container>.tune-entry").each((id, tune_entry) => {
+						var tune_id_class = tune_entry.classList[0];
+						if ($('.'+tune_id_class).length > 1)
+						{
+							tune_entry.classList.add("tune-in-a-set");
+						}
+						else
+						{
+							tune_entry.classList.remove("tune-in-a-set");
+						}
+					})
 				}
 			},
 			popup: {
