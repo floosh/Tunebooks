@@ -48,10 +48,10 @@
 						<p onclick="helpers.ui.toggleTuneType('all')">All</p>
 						<p onclick="helpers.ui.toggleTuneType('reel')">Reels</p>
 						<p onclick="helpers.ui.toggleTuneType(['jig', 'slipjig'])">Jigs</p>
-						<p onclick="helpers.ui.toggleTuneType('polka')">Polkas</p>
-						<p onclick="helpers.ui.toggleTuneType('hornpipe')">Hornpipes</p>
-						<p onclick="helpers.ui.toggleTuneType(['slide', 'waltz', 'barndance', 'strathspey', 'three-two', 'mazurka', 'march'])">
+						<p
+							onclick="helpers.ui.toggleTuneType(['slide', 'waltz', 'barndance', 'strathspey', 'three-two', 'mazurka', 'march'])">
 							Others</p>
+						<p style="float: right" onclick="helpers.ui.toggleLonelyTunes()">Lonely tunes</p>
 					</div>
 				</div>
 			</div>
@@ -337,6 +337,10 @@
 							$("#tunes-container>.tune-type-" + t).show();
 						}
 					}
+				},
+				toggleLonelyTunes: function()
+				{
+					$("#tunes-container>.tune-entry.tune-in-a-set").hide();
 				}
 			},
 			popup: {
