@@ -60,7 +60,7 @@
  	text-align: center;
  	background-color: #EEE;
  	border-bottom: solid 1px #cfcfcf;
- 	z-index: 99;
+ 	z-index: 50;
  }
 
  .tab-header>* {
@@ -166,13 +166,16 @@
  	padding: 0 5px;
  }
 
- .tune-entry-delete-btn,
- .set-entry-delete-btn {
+ .tune-entry-edit-btn,
+ .set-entry-delete-btn,
+ .tune-entry-sheet-btn {
  	float: right;
+	margin-left: 5px;
  }
 
- .tune-entry-delete-btn:hover,
- .set-entry-delete-btn:hover {
+ .tune-entry-edit-btn:hover,
+ .set-entry-delete-btn:hover,
+ .tune-entry-sheet-btn:hover {
  	color: red;
  	cursor: pointer;
  }
@@ -227,7 +230,7 @@
  #popup {
  	position: relative;
  	left: 50%;
- 	top: 40%;
+ 	top: 50%;
  	transform: translate(-50%, -50%);
  	background: white;
  	border: 1px solid;
@@ -241,9 +244,16 @@
  	max-width: 30em;
  }
 
- .tunepal-popup {
+ .tunepal-popup, .tune-sheet-popup {
  	min-width: 20em;
  	max-width: 50em;
+ 	max-height: 90%;
+	top: 50%;
+ }
+
+ #tune-sheet-content {
+	overflow-y: scroll;
+    max-height: 40em;
  }
 
  #popup-background {

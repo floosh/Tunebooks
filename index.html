@@ -11,13 +11,15 @@
 	<link rel="stylesheet" href="css/side-menu.css" />
 	<link rel="stylesheet" href="css/style.css" />
 	<link rel="stylesheet" href="css/dragula.min.css" />
+	<link rel="stylesheet" href="css/tom-select.css" />
 	<link rel="stylesheet" href="assets/fontawesome/css/fontawesome.min.css" />
 	<link rel="stylesheet" href="assets/fontawesome/css/solid.min.css" />
 	<script src="lib/jquery-3.7.1.min.js"></script>
 	<script src="lib/handlebars.min-v4.7.8.js"></script>
-	<link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.css" rel="stylesheet">
-	<script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
+	<script src="lib/handlebars.min-v4.7.8.js"></script>
+	<script src="lib/tom-select.complete.min.js"></script>
 	<script src='lib/dragula.min.js'></script>
+	<script src='lib/abcjs-basic-min.js'></script>
 </head>
 
 <body>
@@ -68,8 +70,8 @@
 	<script id="tune-template" type="text/x-handlebars-template">
 		<div class="tune-id-{{id}} tune-entry tune-type-{{classify type}} tune-key-{{key}} tune-mode-{{mode}}">
 			<p class="tune-json-data" hidden="true">{{json this}}</p>
-			<p class="tune-title">{{name}}<i class="fa-solid fa-pen-to-square tune-entry-delete-btn"
-					onclick="helpers.tunes.edit(this)"></i></p>
+			<p class="tune-title">{{name}}<i class="fa-solid fa-pen-to-square tune-entry-edit-btn"
+				onclick="helpers.tunes.edit(this)"></i><i class="fa-solid fa-music tune-entry-sheet-btn" onclick="helpers.tunes.showTuneSheet(this)"></i></p>
 			<p class="tune-info"><span class="tune-type">{{type}}</span><span class="tune-mode">{{key}}{{mode}}</span><span
 					class="tune-abc">{{abc}}</span></p>
 		</div>
@@ -178,6 +180,24 @@
 			</div>
 		</div>
 	</script>
+	<script id="tune-sheet-popup-template" type="text/x-handlebars-template">
+		<div id="popup-background">
+			<div id="popup" class="tune-sheet-popup">
+				<div id="tune-sheet-content">
+					<div id="tune-sheet"></div>
+				</div>
+				<div class="pure-control-group pure-u-1" style="margin-top: 10px;">
+					<button class="pure-button" style="float: right;" onclick="helpers.popup.close()">Close</button>
+				</div>
+			</div>
+		</div>
+	</script>
+	<script id="abc-template" type="text/x-handlebars-template">
+		T:{{name}}
+		R:{{type}}
+		K:{{key}}{{mode}}
+		{{abc}}
+	</script>
 	<script>
 		var tunes, templates, tune_entry_in_edit_mode;
 		var model = { tunes: [], sets: [] };
@@ -246,6 +266,13 @@
 					mode = mode.replace("mixolydian", "mix");
 					mode = mode.replace("dorian", "dor");
 					return mode;
+				},
+				showTuneSheet: function(element)
+				{
+					var tune = helpers.tunes.serializeTuneEntry($(element).closest("div.tune-entry"));
+					var abc = templates["abc-template"](tune);
+					helpers.popup.show("tune-sheet-popup-template", tune);
+					ABCJS.renderAbc("tune-sheet", abc)
 				}
 			},
 			sets: {
@@ -508,7 +535,7 @@
 
 		function initHandlebars()
 		{
-			templates = ["tune-template", "set-template", "tune-template-browse", "tune-entry-popup-template", "tunepal-popup-template"]
+			templates = ["tune-template", "set-template", "tune-template-browse", "tune-entry-popup-template", "tunepal-popup-template", "tune-sheet-popup-template", "abc-template"]
 				.reduce((acc, val, index) =>
 				{
 					acc[val] = Handlebars.compile(document.getElementById(val).innerHTML)
