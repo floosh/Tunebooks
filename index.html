@@ -34,6 +34,7 @@
 				</div>
 			</div>
 			<div class="menu-footer">
+				<button id="tunepal-load-btn" class="pure-button">Load from tunepal</button>
 				<button id="save-btn" disabled="true" class="button-secondary pure-button">Save</button>
 				<a id="github-link" href="https://github.com/floosh/Tunebooks">Github</a>
 			</div>
@@ -49,7 +50,7 @@
 						<p onclick="helpers.ui.toggleTuneType('reel')">Reels</p>
 						<p onclick="helpers.ui.toggleTuneType(['jig', 'slipjig'])">Jigs</p>
 						<p
-							onclick="helpers.ui.toggleTuneType(['slide', 'waltz', 'barndance', 'strathspey', 'three-two', 'mazurka', 'march'])">
+							onclick="helpers.ui.toggleTuneType(['hornpipe', 'polka', 'slide', 'waltz', 'barndance', 'strathspey', 'three-two', 'mazurka', 'march'])">
 							Others</p>
 						<p style="float: right" onclick="helpers.ui.toggleLonelyTunes()">Lonely tunes</p>
 					</div>
@@ -90,8 +91,8 @@
 		</div>
 	</script>
 	<script id="tune-entry-popup-template" type="text/x-handlebars-template">
-		<div id="tune-entry-popup-background">
-			<div id="tune-entry-popup">
+		<div id="popup-background">
+			<div id="popup" class="tune-entry-popup">
 				<form class="pure-form pure-form-stacked">
 					<fieldset>
 						<legend class="tune-title">{{name}}</legend>
@@ -153,6 +154,30 @@
 			</div>
 		</div>
 	</script>
+	<script id="tunepal-popup-template" type="text/x-handlebars-template">
+		<div id="popup-background">
+			<div id="popup" class="tunepal-popup">
+				<form class="pure-form pure-form-stacked">
+					<fieldset>
+						<legend class="tune-title">Load from tunepal</legend>
+						<div class="pure-g">
+							<p>
+								Copy-paste the content of the exported .abc file from tunepal below:
+							</p>
+							<div class="pure-control-group pure-u-1">
+								<textarea id="tune-entry-popup-abc" id="tune-select-mode" rows="20" style="width: 100%;"></textarea>
+							</div>
+							<br/>
+							<div class="pure-control-group pure-u-1" style="margin-top: 10px;">
+								<button class="pure-button" style="float: right;" onclick="helpers.popup.close()">Cancel</button>
+								<button class="pure-button pure-button-primary" style="float: right; margin-right: 5px;" onclick="parseTunepalABC()">Load</button>
+							</div>
+						</div>
+					</fieldset>
+				</form>
+			</div>
+		</div>
+	</script>
 	<script>
 		var tunes, templates, tune_entry_in_edit_mode;
 		var model = { tunes: [], sets: [] };
@@ -164,6 +189,11 @@
 					if (typeof item !== 'object')
 					{
 						item = helpers.tunes.findById(item);
+					}
+					if (!item || $("#tunes-container>.tune-entry.tune-id-" + item.id).length > 0)
+					{
+						// duplicate tune
+						return;
 					}
 					var tunes_container = document.getElementById("tunes-container");
 					tunes_container.insertAdjacentHTML('beforeend', templates["tune-template"](item));
@@ -179,7 +209,7 @@
 				{
 					tune_entry_in_edit_mode = $(element).closest("div.tune-entry");
 					var tune_to_edit = helpers.tunes.serializeTuneEntry(tune_entry_in_edit_mode);
-					helpers.popup.show(tune_to_edit);
+					helpers.popup.show("tune-entry-popup-template", tune_to_edit);
 				},
 				serialize: function ()
 				{
@@ -291,6 +321,10 @@
 						helpers.sets.deserialize();
 						helpers.tunes.deserialize();
 					});
+				},
+				loadFromTunepal: function()
+				{
+					helpers.popup.show("tunepal-popup-template");
 				}
 			},
 			ui: {
@@ -338,15 +372,15 @@
 						}
 					}
 				},
-				toggleLonelyTunes: function()
+				toggleLonelyTunes: function ()
 				{
 					$("#tunes-container>.tune-entry.tune-in-a-set").hide();
 				}
 			},
 			popup: {
-				show: function (tune)
+				show: function (template_name, context)
 				{
-					$("#popup-container").html(templates["tune-entry-popup-template"](tune));
+					$("#popup-container").html(templates[template_name](context));
 				},
 				close: function ()
 				{
@@ -401,6 +435,16 @@
 					});
 				}
 			}
+		}
+
+		function parseTunepalABC()
+		{
+			var abc = $("#tune-entry-popup-abc").val();
+			var regexp = /I:Tunepal ID:(\d+).*source:thesession.org/gm;
+			Array.from(abc.matchAll(regexp), (m) => m[1]).forEach(tune_id => {
+				helpers.tunes.add(tune_id);
+			});
+			helpers.popup.close();
 		}
 
 		function initTunesSelect()
@@ -464,7 +508,7 @@
 
 		function initHandlebars()
 		{
-			templates = ["tune-template", "set-template", "tune-template-browse", "tune-entry-popup-template"]
+			templates = ["tune-template", "set-template", "tune-template-browse", "tune-entry-popup-template", "tunepal-popup-template"]
 				.reduce((acc, val, index) =>
 				{
 					acc[val] = Handlebars.compile(document.getElementById(val).innerHTML)
@@ -519,6 +563,7 @@
 
 			$("#new-set-btn").on("click", helpers.sets.new);
 			$("#save-btn").on("click", helpers.model.save);
+			$("#tunepal-load-btn").on("click", helpers.model.loadFromTunepal);
 			$("#menuTunes").on("click", helpers.ui.showTunes);
 			$("#menuSets").on("click", helpers.ui.showSets);
 

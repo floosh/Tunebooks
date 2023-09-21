@@ -36,7 +36,7 @@
  	display: block;
  }
 
- #save-btn {
+ .menu-footer>* {
  	width: 100%;
  }
 
@@ -47,10 +47,9 @@
  	padding: 10px;
  	bottom: 0;
  	left: 0;
- }
-
- #save-btn {
- 	margin-bottom: 10px;
+ 	display: flex;
+ 	flex-direction: column;
+ 	gap: 10px;
  }
 
  .tab-header {
@@ -61,7 +60,7 @@
  	text-align: center;
  	background-color: #EEE;
  	border-bottom: solid 1px #cfcfcf;
-	z-index: 99;
+ 	z-index: 99;
  }
 
  .tab-header>* {
@@ -112,20 +111,20 @@
  }
 
  #tunes-filter {
-	letter-spacing: -0.03em;
-	margin: 5px;
+ 	letter-spacing: -0.03em;
+ 	margin: 5px;
  }
 
- #tunes-filter > p {
-	display: inline-block;
-	margin: 5px;
+ #tunes-filter>p {
+ 	display: inline-block;
+ 	margin: 5px;
  	font-weight: bold;
-	font-size: smaller;
+ 	font-size: smaller;
  }
 
- #tunes-filter > p:hover {
-	text-decoration: underline;
-	cursor: pointer;
+ #tunes-filter>p:hover {
+ 	text-decoration: underline;
+ 	cursor: pointer;
  }
 
  .tune-entry {
@@ -178,9 +177,9 @@
  	cursor: pointer;
  }
 
-div.tune-entry.tune-in-a-set {
-	opacity: 0.7;
-  }
+ div.tune-entry.tune-in-a-set {
+ 	opacity: 0.7;
+ }
 
  #sets-container {
  	padding: 3px;
@@ -225,7 +224,7 @@ div.tune-entry.tune-in-a-set {
  	text-align: left;
  }
 
- #tune-entry-popup {
+ #popup {
  	position: relative;
  	left: 50%;
  	top: 40%;
@@ -234,14 +233,23 @@ div.tune-entry.tune-in-a-set {
  	border: 1px solid;
  	padding: 20px;
  	border-radius: 8px;
+ 	z-index: 90;
+ }
+
+ .tune-entry-popup {
  	min-width: 20em;
  	max-width: 30em;
  }
 
- #tune-entry-popup-background {
+ .tunepal-popup {
+ 	min-width: 20em;
+ 	max-width: 50em;
+ }
+
+ #popup-background {
  	position: fixed;
  	/* Stay in place */
- 	z-index: 1;
+ 	z-index: 80;
  	/* Sit on top */
  	left: 0;
  	top: 0;
@@ -287,17 +295,18 @@ div.tune-entry.tune-in-a-set {
  }
 
  :root {
-    --color-A:#fff575;;
-    --color-Am:#ffeb85;
-    --color-B:rgb(184 204 255);
-    --color-C:rgb(235 208 255);
-    --color-D:rgb(175 232 172);
-    --color-Dm:rgb(191 220 189);
-    --color-E:rgb(254 207 142);
-    --color-F:rgb(255 179 179);
-    --color-G:rgb(178 241 232);
-    --color-Gm:rgb(187 229 236);
-}
+ 	--color-A: #fff575;
+ 	;
+ 	--color-Am: #ffeb85;
+ 	--color-B: rgb(184 204 255);
+ 	--color-C: rgb(235 208 255);
+ 	--color-D: rgb(175 232 172);
+ 	--color-Dm: rgb(191 220 189);
+ 	--color-E: rgb(254 207 142);
+ 	--color-F: rgb(255 179 179);
+ 	--color-G: rgb(178 241 232);
+ 	--color-Gm: rgb(187 229 236);
+ }
 
  .tune-key-A.tune-mode-maj,
  .tune-key-A.tune-mode-mix {
