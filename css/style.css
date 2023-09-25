@@ -52,6 +52,32 @@
  	gap: 10px;
  }
 
+ #menu-profiles > a {
+    text-decoration: none;
+ }
+
+.profile {
+	padding: 10px;
+}
+
+.profile:hover {
+	background-color: #EEE;
+	cursor: pointer;
+}
+
+.profile_name {
+	font-weight: bold;
+    color: #444;
+    text-transform: capitalize;
+    margin: 0;
+    padding: 0;
+}
+
+.profile_info {
+	margin: 0;
+    padding: 0;
+}
+
  .tab-header {
  	padding: 15px;
  	box-sizing: border-box;

@@ -35,6 +35,7 @@
 					<p class="tab-title">Tunebooks</p>
 				</div>
 			</div>
+			<div id="menu-profiles"></div>
 			<div class="menu-footer">
 				<button id="tunepal-load-btn" class="pure-button">Load from tunepal</button>
 				<button id="save-btn" disabled="true" class="button-secondary pure-button">Save</button>
@@ -199,10 +200,20 @@
 		K:{{key}}{{mode}}
 		{{abc}}
 	</script>
+	<script id="profiles-template" type="text/x-handlebars-template">
+		{{#each this}}
+		<a href="?t={{this.name}}">
+		<div class="profile">
+			<p class="profile_name">{{this.name}}</p>
+			<p class="profile_info">{{tunes}} tunes, {{sets}} sets</p>
+		</div>
+		</a>
+		{{/each}}
+	</script>
 	<script>
-		var tunes, templates, tune_entry_in_edit_mode;
+		var tunes, templates = [], tune_entry_in_edit_mode;
 		var model = { tunes: [], sets: [] };
-		var full_model = {flo: model};
+		var full_model = {};
 
 		var helpers = {
 			tunes: {
@@ -227,7 +238,7 @@
 					tune_entry.remove();
 					helpers.model.hasChanged();
 				},
-				clear: function()
+				clear: function ()
 				{
 					$("tunes-container").html("");
 				},
@@ -274,7 +285,7 @@
 					mode = mode.replace("dorian", "dor");
 					return mode;
 				},
-				showTuneSheet: function(element)
+				showTuneSheet: function (element)
 				{
 					var tune = helpers.tunes.serializeTuneEntry($(element).closest("div.tune-entry"));
 					var abc = templates["abc-template"](tune);
@@ -299,7 +310,7 @@
 					var sets_container = document.getElementById("sets-container");
 					sets_container.insertAdjacentHTML('beforeend', templates["set-template"](set));
 				},
-				clear: function()
+				clear: function ()
 				{
 					$("sets-container").html("");
 				},
@@ -364,9 +375,10 @@
 						model = full_model[helpers.model.selected_profile];
 						helpers.sets.deserialize();
 						helpers.tunes.deserialize();
+						helpers.profiles.init();
 					});
 				},
-				loadFromTunepal: function()
+				loadFromTunepal: function ()
 				{
 					helpers.popup.show("tunepal-popup-template");
 				}
@@ -478,14 +490,35 @@
 						});
 					});
 				}
+			},
+			profiles: {
+				init: function ()
+				{
+					var profiles_data = Object.keys(full_model).map(profile_name =>
+					{
+						return {
+							name: profile_name,
+							tunes: full_model[profile_name].tunes.length,
+							sets: full_model[profile_name].sets.length,
+						}
+					});
+					debugger;
+					$("#menu-profiles").html(templates["profiles-template"](profiles_data));
+				}
 			}
 		}
 
 		function parseTunepalABC()
 		{
 			var abc = $("#tune-entry-popup-abc").val();
-			var regexp = /I:Tunepal ID:(\d+).*source:thesession.org/gm;
-			Array.from(abc.matchAll(regexp), (m) => m[1]).forEach(tune_id => {
+			var tunepalRegexp = /I:Tunepal ID:(\d+).*source:thesession.org/gm;
+			var theSessionRegexp = /https:\/\/thesession\.org\/tunes\/(\d+)/gm;
+			Array.from(abc.matchAll(tunepalRegexp), (m) => m[1]).forEach(tune_id =>
+			{
+				helpers.tunes.add(tune_id);
+			});
+			Array.from(abc.matchAll(theSessionRegexp), (m) => m[1]).forEach(tune_id =>
+			{
 				helpers.tunes.add(tune_id);
 			});
 			helpers.popup.close();
@@ -552,12 +585,10 @@
 
 		function initHandlebars()
 		{
-			templates = ["tune-template", "set-template", "tune-template-browse", "tune-entry-popup-template", "tunepal-popup-template", "tune-sheet-popup-template", "abc-template"]
-				.reduce((acc, val, index) =>
-				{
-					acc[val] = Handlebars.compile(document.getElementById(val).innerHTML)
-					return acc;
-				}, {});
+			$("script[type='text/x-handlebars-template']").each(function (id, element)
+			{
+				templates[element.id] = Handlebars.compile(element.innerHTML);
+			})
 
 			Handlebars.registerPartial("tune_template", templates["tune-template"]);
 			Handlebars.registerHelper('select', function (value, options)
