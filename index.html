@@ -272,7 +272,7 @@
 					var tune = helpers.tunes.serializeTuneEntry($(element).closest("div.tune-entry"));
 					var abc = templates["abc-template"](tune);
 					helpers.popup.show("tune-sheet-popup-template", tune);
-					ABCJS.renderAbc("tune-sheet", abc)
+					ABCJS.renderAbc("tune-sheet", abc, { responsive: 'resize' });
 				}
 			},
 			sets: {
