@@ -357,7 +357,7 @@
  	background-color: var(--color-Gm);
  }
 
- .tune-key-B {
+ .tune-key-B,  .tune-key-Bb {
  	background-color: var(--color-B);
  }
 
@@ -369,6 +369,6 @@
  	background-color: var(--color-E);
  }
 
- .tune-key-F {
+ .tune-key-F, .tune-key-F\# {
  	background-color: var(--color-F);
  }

@@ -46,17 +46,16 @@
 				<div class="tab-header">
 					<select id="tunesBrowse" placeholder="Search a tune..." hidden="true"></select>
 				</div>
-				<div id="tunes-container">
-					<div id="tunes-filter">
-						<p onclick="helpers.ui.toggleTuneType('all')">All</p>
-						<p onclick="helpers.ui.toggleTuneType('reel')">Reels</p>
-						<p onclick="helpers.ui.toggleTuneType(['jig', 'slipjig'])">Jigs</p>
-						<p
-							onclick="helpers.ui.toggleTuneType(['hornpipe', 'polka', 'slide', 'waltz', 'barndance', 'strathspey', 'three-two', 'mazurka', 'march'])">
-							Others</p>
-						<p style="float: right" onclick="helpers.ui.toggleLonelyTunes()">Lonely tunes</p>
-					</div>
+				<div id="tunes-filter">
+					<p onclick="helpers.ui.toggleTuneType('all')">All</p>
+					<p onclick="helpers.ui.toggleTuneType('reel')">Reels</p>
+					<p onclick="helpers.ui.toggleTuneType(['jig', 'slipjig'])">Jigs</p>
+					<p
+						onclick="helpers.ui.toggleTuneType(['hornpipe', 'polka', 'slide', 'waltz', 'barndance', 'strathspey', 'three-two', 'mazurka', 'march'])">
+						Others</p>
+					<p style="float: right" onclick="helpers.ui.toggleLonelyTunes()">Lonely tunes</p>
 				</div>
+				<div id="tunes-container"></div>
 			</div>
 			<div id="sets" class="pure-u-xl-3-4 pure-u-lg-2-3 pure-u-1">
 				<div class="tab-header tab-header-sets">
@@ -124,10 +123,12 @@
 									{{#select key}}
 									<option value="A">A</option>
 									<option value="B">B</option>
+									<option value="Bb">Bb</option>
 									<option value="C">C</option>
 									<option value="D">D</option>
 									<option value="E">E</option>
 									<option value="F">F</option>
+									<option value="F#">F#</option>
 									<option value="G">G</option>
 									{{/select}}
 								</select>
@@ -201,6 +202,7 @@
 	<script>
 		var tunes, templates, tune_entry_in_edit_mode;
 		var model = { tunes: [], sets: [] };
+		var full_model = {flo: model};
 
 		var helpers = {
 			tunes: {
@@ -224,6 +226,10 @@
 					var tune_entry = $(element).closest("div.tune-entry");
 					tune_entry.remove();
 					helpers.model.hasChanged();
+				},
+				clear: function()
+				{
+					$("tunes-container").html("");
 				},
 				edit: function (element)
 				{
@@ -250,6 +256,7 @@
 				},
 				deserialize: function ()
 				{
+					helpers.tunes.clear();
 					if (model.tunes)
 					{
 						model.tunes.forEach(function (tune)
@@ -292,6 +299,10 @@
 					var sets_container = document.getElementById("sets-container");
 					sets_container.insertAdjacentHTML('beforeend', templates["set-template"](set));
 				},
+				clear: function()
+				{
+					$("sets-container").html("");
+				},
 				delete: function (element)
 				{
 					var set_entry = $(element).closest("div.set-entry-container");
@@ -317,6 +328,7 @@
 				},
 				deserialize: function ()
 				{
+					helpers.sets.clear();
 					if (model.sets)
 					{
 						model.sets.forEach(function (set)
@@ -328,12 +340,13 @@
 			},
 			model: {
 				url: "https://api.jsonbin.io/v3/b/64f6f51e8d92e126ae67569e",
+				selected_profile: "",
 				save: function ()
 				{
 					$("#save-btn")[0].disabled = true;
 					model.sets = helpers.sets.serialize();
 					model.tunes = helpers.tunes.serialize();
-					helpers.json.put(helpers.model.url, model);
+					helpers.json.put(helpers.model.url, full_model);
 				},
 				hasChanged: function ()
 				{
@@ -342,9 +355,13 @@
 				},
 				load: function ()
 				{
+					var url = new URL(window.location.href);
+					helpers.model.selected_profile = url.searchParams.get("t") || "flo";
 					helpers.json.get(helpers.model.url + "/latest").then(function (data)
 					{
-						model = data.record;
+						full_model = data.record;
+						full_model[helpers.model.selected_profile] = full_model[helpers.model.selected_profile] || {};
+						model = full_model[helpers.model.selected_profile];
 						helpers.sets.deserialize();
 						helpers.tunes.deserialize();
 					});
@@ -593,6 +610,7 @@
 			$("#tunepal-load-btn").on("click", helpers.model.loadFromTunepal);
 			$("#menuTunes").on("click", helpers.ui.showTunes);
 			$("#menuSets").on("click", helpers.ui.showSets);
+			$(".menu-tunebooks>p").on("click")
 
 			if (!helpers.ui.isMobileView())
 			{
