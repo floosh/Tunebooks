@@ -156,6 +156,15 @@
  	margin-bottom: 0;
  }
 
+ .tune-title > a {
+	text-decoration: none;
+	color: inherit;
+ }
+
+ .tune-title:hover {
+	text-decoration: underline;
+ }
+
  .tune-abc {
  	margin-left: 10px;
  	text-transform: none;

@@ -70,7 +70,7 @@
 	<script id="tune-template" type="text/x-handlebars-template">
 		<div class="tune-id-{{id}} tune-entry tune-type-{{classify type}} tune-key-{{key}} tune-mode-{{mode}}">
 			<p class="tune-json-data" hidden="true">{{json this}}</p>
-			<p class="tune-title">{{name}}<i class="fa-solid fa-pen-to-square tune-entry-edit-btn"
+			<p class="tune-title"><a target="_blank" href="https://thesession.org/tunes/{{id}}">{{name}}</a><i class="fa-solid fa-pen-to-square tune-entry-edit-btn"
 				onclick="helpers.tunes.edit(this)"></i><i class="fa-solid fa-music tune-entry-sheet-btn" onclick="helpers.tunes.showTuneSheet(this)"></i></p>
 			<p class="tune-info"><span class="tune-type">{{type}}</span><span class="tune-mode">{{key}}{{mode}}</span><span
 					class="tune-abc">{{abc}}</span></p>
