@@ -348,9 +348,10 @@
  	--color-D: rgb(175 232 172);
  	--color-Dm: rgb(191 220 189);
  	--color-E: rgb(254 207 142);
- 	--color-F: rgb(255 179 179);
+ 	--color-Fm: rgb(255 179 179);
  	--color-G: rgb(178 241 232);
  	--color-Gm: rgb(187 229 236);
+	--color-F: rgb(255 182 217);
  }
 
  .tune-key-A.tune-mode-maj,
@@ -383,6 +384,20 @@
  	background-color: var(--color-Gm);
  }
 
+ .tune-key-F.tune-mode-min,
+ .tune-key-F.tune-mode-dor,
+ .tune-key-F\#.tune-mode-min,
+ .tune-key-F\#.tune-mode-dor {
+ 	background-color: var(--color-Fm);
+ }
+
+ .tune-key-F.tune-mode-maj,
+ .tune-key-F.tune-mode-mix,
+ .tune-key-F\#.tune-mode-maj,
+ .tune-key-F\#.tune-mode-mix {
+ 	background-color: var(--color-F);
+ }
+
  .tune-key-B,  .tune-key-Bb {
  	background-color: var(--color-B);
  }
@@ -393,8 +408,4 @@
 
  .tune-key-E {
  	background-color: var(--color-E);
- }
-
- .tune-key-F, .tune-key-F\# {
- 	background-color: var(--color-F);
  }
