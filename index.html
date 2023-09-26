@@ -166,7 +166,7 @@
 						<legend class="tune-title">Load from tunepal</legend>
 						<div class="pure-g">
 							<p>
-								Copy-paste the content of the exported .abc file from tunepal below:
+								Copy-paste the content of the exported .abc file from tunepal (or TheSession) below:
 							</p>
 							<div class="pure-control-group pure-u-1">
 								<textarea id="tune-entry-popup-abc" id="tune-select-mode" rows="20" style="width: 100%;"></textarea>
@@ -299,7 +299,7 @@
 				},
 				showTuneSheet: function (element)
 				{
-					var tune = helpers.tunes.serializeTuneEntry($(element).closest("div.tune-entry"));
+					var tune = helpers.tunes.serializeTuneEntry($(element).closest("div.tune-entry"), true);
 					var abc = templates["abc-template"](tune);
 					helpers.popup.show("tune-sheet-popup-template", tune);
 					ABCJS.renderAbc("tune-sheet", abc, { responsive: 'resize' });
@@ -656,13 +656,18 @@
 					}
 					return acc;
 				}, {});
-				initTunesSelect();
+
+				helpers.model.load();
+
+				if (!helpers.ui.isMobileView())
+				{
+					initTunesSelect();
+					initDragNDrop();
+				}
 			});
 
 		$(function ()
 		{
-			helpers.model.load();
-
 			$("#new-set-btn").on("click", helpers.sets.new);
 			$("#save-btn").on("click", helpers.model.save);
 			$("#tunepal-load-btn").on("click", helpers.model.loadFromTunepal);
@@ -670,10 +675,7 @@
 			$("#menuSets").on("click", helpers.ui.showSets);
 			$(".menu-tunebooks>p").on("click")
 
-			if (!helpers.ui.isMobileView())
-			{
-				initDragNDrop();
-			}
+
 		});
 
 		$(window).on('resize', function ()
