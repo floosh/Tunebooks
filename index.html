@@ -228,9 +228,16 @@
 						// duplicate tune
 						return;
 					}
-					var tunes_container = document.getElementById("tunes-container");
-					tunes_container.insertAdjacentHTML('beforeend', templates["tune-template"](item));
+					helpers.tunes.normalize(item);
+					$("#tunes-container").prepend(templates["tune-template"](item));
 					helpers.model.hasChanged();
+				},
+				normalize: function(tune)
+				{
+					if (!tune.abc)
+					{
+						tune.abc = helpers.tunes.findById(tune.id).abc;
+					}
 				},
 				delete: function (element)
 				{
@@ -245,7 +252,7 @@
 				edit: function (element)
 				{
 					tune_entry_in_edit_mode = $(element).closest("div.tune-entry");
-					var tune_to_edit = helpers.tunes.serializeTuneEntry(tune_entry_in_edit_mode);
+					var tune_to_edit = helpers.tunes.serializeTuneEntry(tune_entry_in_edit_mode, true);
 					helpers.popup.show("tune-entry-popup-template", tune_to_edit);
 				},
 				serialize: function ()
@@ -257,9 +264,14 @@
 					});
 					return tunes;
 				},
-				serializeTuneEntry: function (element)
+				serializeTuneEntry: function (element, withABC)
 				{
-					return JSON.parse($(element).children("p.tune-json-data")[0].innerText);
+					var tune_json = JSON.parse($(element).children("p.tune-json-data")[0].innerText);
+					if (!withABC && !tune_json.customAbc)
+					{
+						delete tune_json.abc;
+					}
+					return tune_json;
 				},
 				findById(tune_id)
 				{
@@ -270,10 +282,10 @@
 					helpers.tunes.clear();
 					if (model.tunes)
 					{
-						model.tunes.forEach(function (tune)
+						for (var i = model.tunes.length - 1; i >= 0; i--)
 						{
-							helpers.tunes.add(tune);
-						});
+							helpers.tunes.add(model.tunes[i]);
+						}
 					}
 					helpers.ui.highlightUsedtunes();
 				},
@@ -307,8 +319,10 @@
 						}
 						helpers.model.hasChanged();
 					}
-					var sets_container = document.getElementById("sets-container");
-					sets_container.insertAdjacentHTML('beforeend', templates["set-template"](set));
+					set.tunes.forEach(tune => {
+						helpers.tunes.normalize(tune);
+					});
+					$("#sets-container").append(templates["set-template"](set));
 				},
 				clear: function ()
 				{
@@ -453,7 +467,14 @@
 					tune.type = $("#tune-entry-popup-type").val();
 					tune.key = $("#tune-entry-popup-key").val();
 					tune.mode = $("#tune-entry-popup-mode").val();
-					tune.abc = $("#tune-entry-popup-abc").val();
+
+					var abc = $("#tune-entry-popup-abc").val();
+					if (abc !== tune.abc)
+					{
+						tune.abc = abc;
+						tune.customAbc = true;
+					}
+
 					tune_entry_in_edit_mode.replaceWith(templates["tune-template"](tune));
 					helpers.popup.close();
 				}
@@ -502,7 +523,6 @@
 							sets: full_model[profile_name].sets.length,
 						}
 					});
-					debugger;
 					$("#menu-profiles").html(templates["profiles-template"](profiles_data));
 				}
 			}
@@ -513,14 +533,17 @@
 			var abc = $("#tune-entry-popup-abc").val();
 			var tunepalRegexp = /I:Tunepal ID:(\d+).*source:thesession.org/gm;
 			var theSessionRegexp = /https:\/\/thesession\.org\/tunes\/(\d+)/gm;
-			Array.from(abc.matchAll(tunepalRegexp), (m) => m[1]).forEach(tune_id =>
+
+			var addTunesFromRegex = function (regexp)
 			{
-				helpers.tunes.add(tune_id);
-			});
-			Array.from(abc.matchAll(theSessionRegexp), (m) => m[1]).forEach(tune_id =>
-			{
-				helpers.tunes.add(tune_id);
-			});
+				Array.from(abc.matchAll(regexp), (m) => m[1]).forEach(tune_id =>
+				{
+					helpers.tunes.add(tune_id);
+				});
+			}
+			addTunesFromRegex(tunepalRegexp);
+			addTunesFromRegex(theSessionRegexp);
+
 			helpers.popup.close();
 		}
 
