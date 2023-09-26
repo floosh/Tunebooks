@@ -232,7 +232,7 @@
 					$("#tunes-container").prepend(templates["tune-template"](item));
 					helpers.model.hasChanged();
 				},
-				normalize: function(tune)
+				normalize: function (tune)
 				{
 					if (!tune.abc)
 					{
@@ -319,9 +319,13 @@
 						}
 						helpers.model.hasChanged();
 					}
-					set.tunes.forEach(tune => {
-						helpers.tunes.normalize(tune);
-					});
+					else if (set.tunes)
+					{
+						set.tunes.forEach(tune =>
+						{
+							helpers.tunes.normalize(tune);
+						});
+					}
 					$("#sets-container").append(templates["set-template"](set));
 				},
 				clear: function ()
