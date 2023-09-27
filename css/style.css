@@ -52,31 +52,31 @@
  	gap: 10px;
  }
 
- #menu-profiles > a {
-    text-decoration: none;
+ #menu-profiles>a {
+ 	text-decoration: none;
  }
 
-.profile {
-	padding: 10px;
-}
+ .profile {
+ 	padding: 10px;
+ }
 
-.profile:hover {
-	background-color: #EEE;
-	cursor: pointer;
-}
+ .profile:hover {
+ 	background-color: #EEE;
+ 	cursor: pointer;
+ }
 
-.profile_name {
-	font-weight: bold;
-    color: #444;
-    text-transform: capitalize;
-    margin: 0;
-    padding: 0;
-}
+ .profile_name {
+ 	font-weight: bold;
+ 	color: #444;
+ 	text-transform: capitalize;
+ 	margin: 0;
+ 	padding: 0;
+ }
 
-.profile_info {
-	margin: 0;
-    padding: 0;
-}
+ .profile_info {
+ 	margin: 0;
+ 	padding: 0;
+ }
 
  .tab-header {
  	padding: 15px;
@@ -136,22 +136,44 @@
  	height: 100%;
  }
 
- #tunes-filter {
- 	letter-spacing: -0.03em;
- 	margin: 5px;
- }
+ /*#region filters*/
 
- #tunes-filter>p {
- 	display: inline-block;
- 	margin: 5px;
- 	font-weight: bold;
+ #tune-filter-main,
+ #tune-filter-side {
  	font-size: smaller;
+ 	width: 100%;
  }
 
- #tunes-filter>p:hover {
- 	text-decoration: underline;
- 	cursor: pointer;
+ #tune-filter-main>form,
+ #tune-filter-side>form {
+ 	padding: 5px;
+ 	display: flex;
+ 	align-items: stretch;
+ 	gap: 4px;
  }
+
+ #tune-filter-main>form>input {
+ 	min-width: 5em;
+ 	flex-grow: 1;
+ }
+
+ #tune-filter-side>form>select {
+ 	flex-grow: 1;
+ }
+
+ #tune-filter-side {
+ 	display: none;
+ }
+
+ #tune-filter {
+ 	border-bottom: solid 1px #cfcfcf;
+ }
+
+ #tune-filter select {
+ 	padding: 0em 0.3em;
+ }
+
+ /*#endregion*/
 
  .tune-entry {
  	padding: 0px 10px;
@@ -182,13 +204,13 @@
  	margin-bottom: 0;
  }
 
- .tune-title > a {
-	text-decoration: none;
-	color: inherit;
+ .tune-title>a {
+ 	text-decoration: none;
+ 	color: inherit;
  }
 
  .tune-title:hover {
-	text-decoration: underline;
+ 	text-decoration: underline;
  }
 
  .tune-abc {
@@ -205,7 +227,7 @@
  .set-entry-delete-btn,
  .tune-entry-sheet-btn {
  	float: right;
-	margin-left: 5px;
+ 	margin-left: 5px;
  }
 
  .tune-entry-edit-btn:hover,
@@ -221,6 +243,10 @@
 
  #sets-container {
  	padding: 3px;
+ }
+
+ #tunes-container {
+ 	box-shadow: inset 0 1px 3px #ddd;
  }
 
  .set-entry {
@@ -279,16 +305,17 @@
  	max-width: 30em;
  }
 
- .tunepal-popup, .tune-sheet-popup {
+ .tunepal-popup,
+ .tune-sheet-popup {
  	min-width: 20em;
  	max-width: 50em;
  	max-height: 90%;
-	top: 50%;
+ 	top: 50%;
  }
 
  #tune-sheet-content {
-	overflow-y: scroll;
-    max-height: 40em;
+ 	overflow-y: scroll;
+ 	max-height: 40em;
  }
 
  #popup-background {
@@ -341,7 +368,6 @@
 
  :root {
  	--color-A: #fff575;
- 	;
  	--color-Am: #ffeb85;
  	--color-B: rgb(184 204 255);
  	--color-C: rgb(235 208 255);
@@ -351,7 +377,7 @@
  	--color-Fm: rgb(255 179 179);
  	--color-G: rgb(178 241 232);
  	--color-Gm: rgb(187 229 236);
-	--color-F: rgb(255 182 217);
+ 	--color-F: rgb(255 182 217);
  }
 
  .tune-key-A.tune-mode-maj,
@@ -398,7 +424,8 @@
  	background-color: var(--color-F);
  }
 
- .tune-key-B,  .tune-key-Bb {
+ .tune-key-B,
+ .tune-key-Bb {
  	background-color: var(--color-B);
  }
 

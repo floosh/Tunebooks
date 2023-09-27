@@ -47,14 +47,54 @@
 				<div class="tab-header">
 					<select id="tunesBrowse" placeholder="Search a tune..." hidden="true"></select>
 				</div>
-				<div id="tunes-filter">
-					<p onclick="helpers.ui.toggleTuneType('all')">All</p>
-					<p onclick="helpers.ui.toggleTuneType('reel')">Reels</p>
-					<p onclick="helpers.ui.toggleTuneType(['jig', 'slipjig'])">Jigs</p>
-					<p
-						onclick="helpers.ui.toggleTuneType(['hornpipe', 'polka', 'slide', 'waltz', 'barndance', 'strathspey', 'three-two', 'mazurka', 'march'])">
-						Others</p>
-					<p style="float: right" onclick="helpers.ui.toggleLonelyTunes()">Lonely tunes</p>
+				<div id="tune-filter">
+					<div id="tune-filter-main">
+						<form class="pure-form pure-form">
+							<input id="tune-filter-search-input" placeholder="Filter tunes..."></input>
+							<select id="tune-filter-type-select" name="type">
+								<option value="">all tunes</option>
+								<option value="jig">jigs</option>
+								<option value="reel">reels</option>
+								<option value="slip jig">slip jigs</option>
+								<option value="hornpipe">hornpipes</option>
+								<option value="polka">polkas</option>
+								<option value="slide">slides</option>
+								<option value="waltz">waltzes</option>
+								<option value="barndance">barndances</option>
+								<option value="strathspey">strathspeys</option>
+								<option value="three-two">three-twos</option>
+								<option value="mazurka">mazurkas</option>
+								<option value="march">marches</option>
+							</select>
+							<button id="tune-filter-btn" class="pure-button"><i class="fa-solid fa-filter"></i></button>
+						</form>
+					</div>
+					<div id="tune-filter-side">
+						<form class="pure-form pure-form">
+							<select id="tune-filter-key-select" name="key">
+								<option value="">All keys</option>
+								<option value="A">A</option>
+								<option value="B">B</option>
+								<option value="Bb">Bb</option>
+								<option value="C">C</option>
+								<option value="D">D</option>
+								<option value="E">E</option>
+								<option value="F">F</option>
+								<option value="F#">F#</option>
+								<option value="G">G</option>
+							</select>
+							<select id="tune-filter-mode-select" name="mode">
+								<option value="">All modes</option>
+								<option value="maj">Major</option>
+								<option value="min">Minor</option>
+								<option value="mix">Mixolydian</option>
+								<option value="dor">Dorian</option>
+								<option value="maj+mix">Maj / Mix</option>
+								<option value="min+dor">Min / Dor</option>
+							</select>
+							<button class="pure-button" title="Lonely tunes"><i class="fa-solid fa-pizza-slice"></i></button>
+						</form>
+					</div>
 				</div>
 				<div id="tunes-container"></div>
 			</div>
@@ -449,6 +489,85 @@
 				toggleLonelyTunes: function ()
 				{
 					$("#tunes-container>.tune-entry.tune-in-a-set").hide();
+				},
+				toggleTuneFilters: function ()
+				{
+					$("#tune-filter-btn").toggleClass("pure-button-active");
+					var side_filters_visible = $("#tune-filter-side").toggle().is(":visible");
+					if (!side_filters_visible)
+					{
+						helpers.filters.resetSideFilters();
+					}
+					return false;
+				}
+			},
+			filters: {
+				search_string: null,
+				tune_type: null,
+				tune_key: null,
+				tune_mode: null,
+				onTextSearch: function (elem)
+				{
+					helpers.filters.search_string = $(this).val().toLowerCase();
+					helpers.filters.refreshTunes();
+				},
+				onTuneTypeSelect: function (elem)
+				{
+					helpers.filters.tune_type = $("#tune-filter-type-select").val();
+					helpers.filters.refreshTunes();
+				},
+				onTuneKeySelect: function (elem)
+				{
+					helpers.filters.tune_key = $("#tune-filter-key-select").val();
+					helpers.filters.refreshTunes();
+				},
+				onTuneModeSelect: function (elem)
+				{
+					helpers.filters.tune_mode = $("#tune-filter-mode-select").val();
+					helpers.filters.refreshTunes();
+				},
+				resetSideFilters: function()
+				{
+					helpers.filters.tune_key = null;
+					helpers.filters.tune_mode = null;
+					helpers.filters.refreshTunes();
+				},
+				refreshTunes: function ()
+				{
+					var tuneDoesMatch = function (element)
+					{
+						var tune = helpers.tunes.serializeTuneEntry(element);
+						if (helpers.filters.tune_key && helpers.filters.tune_key !== tune.key)
+						{
+							return false;
+						}
+						if (helpers.filters.tune_mode && helpers.filters.tune_mode.indexOf(tune.mode) === -1)
+						{
+							return false;
+						}
+						if (helpers.filters.tune_type && helpers.filters.tune_type !== tune.type)
+						{
+							return false;
+						}
+						if (helpers.filters.search_string && tune.name.toLowerCase().indexOf(helpers.filters.search_string) === -1)
+						{
+							return false;
+						}
+						return true;
+					}
+
+
+					$("#tunes-container > div.tune-entry").each(function (id, element)
+					{
+						if (tuneDoesMatch(element))
+						{
+							$(element).show();
+						}
+						else
+						{
+							$(element).hide();
+						}
+					});
 				}
 			},
 			popup: {
@@ -673,7 +792,11 @@
 			$("#tunepal-load-btn").on("click", helpers.model.loadFromTunepal);
 			$("#menuTunes").on("click", helpers.ui.showTunes);
 			$("#menuSets").on("click", helpers.ui.showSets);
-			$(".menu-tunebooks>p").on("click")
+			$("#tune-filter-btn").on("click", helpers.ui.toggleTuneFilters);
+			$("#tune-filter-search-input").on("input", helpers.filters.onTextSearch);
+			$("#tune-filter-type-select").on("change", helpers.filters.onTuneTypeSelect);
+			$("#tune-filter-key-select").on("change", helpers.filters.onTuneKeySelect);
+			$("#tune-filter-mode-select").on("change", helpers.filters.onTuneModeSelect);
 
 
 		});
