@@ -92,7 +92,7 @@
 								<option value="maj+mix">Maj / Mix</option>
 								<option value="min+dor">Min / Dor</option>
 							</select>
-							<button class="pure-button" title="Lonely tunes"><i class="fa-solid fa-pizza-slice"></i></button>
+							<button id="tune-filter-lonely-btn" class="pure-button" title="Lonely tunes"><i class="fa-solid fa-pizza-slice"></i></button>
 						</form>
 					</div>
 				</div>
@@ -470,26 +470,13 @@
 						}
 					})
 				},
-				toggleTuneType: function (type)
-				{
-					if (type === "all")
-					{
-						$("#tunes-container>.tune-entry").show();
-					}
-					else
-					{
-						$("#tunes-container>.tune-entry").hide();
-						type = Array.isArray(type) ? type : [type];
-						for (var t of type)
-						{
-							$("#tunes-container>.tune-type-" + t).show();
-						}
-					}
-				},
-				toggleLonelyTunes: function ()
-				{
-					$("#tunes-container>.tune-entry.tune-in-a-set").hide();
-				},
+			},
+			filters: {
+				search_string: null,
+				tune_type: null,
+				tune_key: null,
+				tune_mode: null,
+				lonely: false,
 				toggleTuneFilters: function ()
 				{
 					$("#tune-filter-btn").toggleClass("pure-button-active");
@@ -499,13 +486,7 @@
 						helpers.filters.resetSideFilters();
 					}
 					return false;
-				}
-			},
-			filters: {
-				search_string: null,
-				tune_type: null,
-				tune_key: null,
-				tune_mode: null,
+				},
 				onTextSearch: function (elem)
 				{
 					helpers.filters.search_string = $(this).val().toLowerCase();
@@ -525,6 +506,13 @@
 				{
 					helpers.filters.tune_mode = $("#tune-filter-mode-select").val();
 					helpers.filters.refreshTunes();
+				},
+				onLonelyTunesToggle: function(elem)
+				{
+					$("#tune-filter-lonely-btn").toggleClass("pure-button-active");
+					helpers.filters.lonely = !helpers.filters.lonely;
+					helpers.filters.refreshTunes();
+					return false;
 				},
 				resetSideFilters: function()
 				{
@@ -550,6 +538,10 @@
 							return false;
 						}
 						if (helpers.filters.search_string && tune.name.toLowerCase().indexOf(helpers.filters.search_string) === -1)
+						{
+							return false;
+						}
+						if (helpers.filters.lonely && $(element).hasClass("tune-in-a-set"))
 						{
 							return false;
 						}
@@ -792,11 +784,12 @@
 			$("#tunepal-load-btn").on("click", helpers.model.loadFromTunepal);
 			$("#menuTunes").on("click", helpers.ui.showTunes);
 			$("#menuSets").on("click", helpers.ui.showSets);
-			$("#tune-filter-btn").on("click", helpers.ui.toggleTuneFilters);
+			$("#tune-filter-btn").on("click", helpers.filters.toggleTuneFilters);
 			$("#tune-filter-search-input").on("input", helpers.filters.onTextSearch);
 			$("#tune-filter-type-select").on("change", helpers.filters.onTuneTypeSelect);
 			$("#tune-filter-key-select").on("change", helpers.filters.onTuneKeySelect);
 			$("#tune-filter-mode-select").on("change", helpers.filters.onTuneModeSelect);
+			$("#tune-filter-lonely-btn").on("click", helpers.filters.onLonelyTunesToggle)
 
 
 		});
