@@ -136,7 +136,7 @@
  	height: 100%;
  }
 
- /*#region filters*/
+ /*#region tunes filters*/
 
  #tune-filter-main,
  #tune-filter-side {
@@ -175,6 +175,19 @@
  }
 
  /*#endregion*/
+ /*#region sets filters*/
+
+ #tab-header-sets > form {
+	display: flex;
+	align-items: stretch;
+	gap:8px;
+ }
+
+ #tab-header-sets select {
+   height: auto;
+}
+
+  /*#endregion*/
 
  .tune-entry {
  	padding: 0px 10px;

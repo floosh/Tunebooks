@@ -49,7 +49,7 @@
 				</div>
 				<div id="tune-filter">
 					<div id="tune-filter-main">
-						<form class="pure-form pure-form">
+						<form class="pure-form">
 							<input id="tune-filter-search-input" placeholder="Filter tunes..."></input>
 							<select id="tune-filter-type-select" name="type">
 								<option value="">all tunes</option>
@@ -72,7 +72,7 @@
 						</form>
 					</div>
 					<div id="tune-filter-side">
-						<form class="pure-form pure-form">
+						<form class="pure-form">
 							<select id="tune-filter-key-select" name="key">
 								<option value="">All keys</option>
 								<option value="A">A</option>
@@ -101,8 +101,27 @@
 				<div id="tunes-container"></div>
 			</div>
 			<div id="sets" class="pure-u-xl-3-4 pure-u-lg-2-3 pure-u-1">
-				<div class="tab-header tab-header-sets">
-					<a id="new-set-btn" class="pure-button pure-button-primary" href="#">New set</a>
+				<div id="tab-header-sets" class="tab-header">
+					<form class="pure-form">
+						<a id="new-set-btn" class="pure-button pure-button-primary" href="#">New set</a>
+						<select id="set-filter-type-select" name="type">
+						<option value="">all sets</option>
+						<option value="jig">jigs</option>
+						<option value="reel">reels</option>
+						<option value="slip jig">slip jigs</option>
+						<option value="hornpipe">hornpipes</option>
+						<option value="polka">polkas</option>
+						<option value="slide">slides</option>
+						<option value="waltz">waltzes</option>
+						<option value="barndance">barndances</option>
+						<option value="strathspey">strathspeys</option>
+						<option value="three-two">three-twos</option>
+						<option value="mazurka">mazurkas</option>
+						<option value="march">marches</option>
+						<option value="slow-air">slow airs</option>
+						<option value="seven-eight">seven-eights</option>
+						</select>
+					</form>
 				</div>
 				<div id="sets-container" class=pure-g></div>
 			</div>
@@ -564,6 +583,22 @@
 							$(element).hide();
 						}
 					});
+				},
+				onSetTypeSelect: function(elem) {
+					var set_type = $("#set-filter-type-select").val();
+					$(".set-entry").each(function (id, element)
+					{
+						if (!set_type || (set_type && $(element).has(".tune-type-" + removeSpaces(set_type)).length > 0))
+						{
+
+							$(element.parentNode).show();
+						}
+						else
+						{
+							$(element.parentNode).hide();
+						}
+					});
+
 				}
 			},
 			popup: {
@@ -743,10 +778,12 @@
 			{
 				return JSON.stringify(context);
 			});
-			Handlebars.registerHelper('classify', function (context)
-			{
-				return context.replace(/\s/g, "");
-			});
+			Handlebars.registerHelper('classify', removeSpaces);
+		}
+
+		function removeSpaces(str)
+		{
+			return str.replace(/\s/g, "");
 		}
 
 		initHandlebars();
@@ -793,7 +830,8 @@
 			$("#tune-filter-type-select").on("change", helpers.filters.onTuneTypeSelect);
 			$("#tune-filter-key-select").on("change", helpers.filters.onTuneKeySelect);
 			$("#tune-filter-mode-select").on("change", helpers.filters.onTuneModeSelect);
-			$("#tune-filter-lonely-btn").on("click", helpers.filters.onLonelyTunesToggle)
+			$("#tune-filter-lonely-btn").on("click", helpers.filters.onLonelyTunesToggle);
+			$("#set-filter-type-select").on("change", helpers.filters.onSetTypeSelect);
 
 
 		});
