@@ -11,7 +11,8 @@
 	<link rel="stylesheet" href="css/side-menu.css" />
 	<link rel="stylesheet" href="css/style.css" />
 	<link rel="stylesheet" href="css/dragula.min.css" />
-	<link rel="stylesheet" href="css/tom-select.css" />
+    <link rel="stylesheet" href="css/tom-select.css" />
+	<link rel="stylesheet" href="css/abcjs-audio.css" />
 	<link rel="stylesheet" href="assets/fontawesome/css/fontawesome.min.css" />
 	<link rel="stylesheet" href="assets/fontawesome/css/solid.min.css" />
 	<script src="lib/jquery-3.7.1.min.js"></script>
@@ -121,6 +122,7 @@
 						<option value="slow-air">slow airs</option>
 						<option value="seven-eight">seven-eights</option>
 						</select>
+                        <div id="audio"></div>
 					</form>
 				</div>
 				<div id="sets-container" class=pure-g></div>
@@ -131,8 +133,12 @@
 	<script id="tune-template" type="text/x-handlebars-template">
 		<div class="tune-id-{{id}} tune-entry tune-type-{{classify type}} tune-key-{{key}} tune-mode-{{mode}}">
 			<p class="tune-json-data" hidden="true">{{json this}}</p>
-			<p class="tune-title"><a target="_blank" href="https://thesession.org/tunes/{{id}}">{{name}}</a><i class="fa-solid fa-pen-to-square tune-entry-edit-btn"
-				onclick="helpers.tunes.edit(this)"></i><i class="fa-solid fa-music tune-entry-sheet-btn" onclick="helpers.tunes.showTuneSheet(this)"></i></p>
+			<p class="tune-title"><a target="_blank" href="https://thesession.org/tunes/{{id}}">{{name}}</a>
+                <i class="tune-entry-btn fa-solid fa-play tune-entry-play-btn" onclick="helpers.tunes.playAudio(this)"></i>
+                <i class="tune-entry-btn fa-solid fa-pen-to-square tune-entry-edit-btn" onclick="helpers.tunes.edit(this)"></i>
+                <i class="tune-entry-btn fa-solid fa-music tune-entry-sheet-btn" onclick="helpers.tunes.showTuneSheet(this)"></i>
+
+            </p>
 			<p class="tune-info"><span class="tune-type">{{type}}</span><span class="tune-mode">{{key}}{{mode}}</span><span
 					class="tune-abc">{{abc}}</span></p>
 		</div>
@@ -143,7 +149,7 @@
 	<script id="set-template" type="text/x-handlebars-template">
 		<div class="set-entry-container pure-u-xl-1-3 pure-u-md-1-2 pure-u-1">
 			<div class="set-entry">
-				<p class="set-title-bar"><input class="set-title" value="{{title}}"></input><i class="fas fa-xmark set-entry-delete-btn"
+				<p class="set-title-bar"><input class="set-title" value="{{title}}"></input><i class="fas fa-xmark set-entry-btn set-entry-delete-btn"
 					onclick="helpers.sets.delete(this)"></i></p>
 				<div class="set-tunes-container">
 					{{#each tunes}}
@@ -366,7 +372,13 @@
 					var abc = templates["abc-template"](tune);
 					helpers.popup.show("tune-sheet-popup-template", tune);
 					ABCJS.renderAbc("tune-sheet", abc, { responsive: 'resize' });
-				}
+				},
+                playAudio: function (element)
+                {
+                    var tune = helpers.tunes.serializeTuneEntry($(element).closest("div.tune-entry"), true);
+                    var abc = templates["abc-template"](tune);
+                    helpers.audio.playABC(abc);
+                }
 			},
 			sets: {
 				new: function ()
@@ -679,7 +691,45 @@
 					});
 					$("#menu-profiles").html(templates["profiles-template"](profiles_data));
 				}
-			}
+			},
+            audio: {
+                synthControl: null,
+                playABC: function(abc) {
+                    var visualOptions = {};
+                   var controlOptions = {
+                        displayRestart: true,
+                        displayPlay: true,
+                        displayProgress: true,
+                        displayClock: true
+                    };
+                    var visualObj = ABCJS.renderAbc("*", abc, visualOptions);
+
+                    if (!ABCJS.synth.supportsAudio()) {
+                        console.log("audio is not supported on this browser");
+                        return;
+                    }
+
+                    if (!helpers.audio.synthControl)
+                    {
+                        helpers.audio.synthControl = new ABCJS.synth.SynthController();
+                        helpers.audio.synthControl.load("#audio", null, controlOptions);
+                        helpers.audio.synthControl.disable(true);
+                    }
+                        
+                    var midiBuffer = new ABCJS.synth.CreateSynth();
+                    midiBuffer.init({
+                        visualObj: visualObj[0],
+                        options: {
+                            
+                        }
+
+                    }).then(function () {
+                        helpers.audio.synthControl.setTune(visualObj[0], true);
+                        helpers.audio.synthControl.play();
+                    });
+                    
+                }
+            }
 		}
 
 		function parseTunepalABC()

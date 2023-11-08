@@ -115,6 +115,10 @@
  	box-shadow: none;
  }
 
+ .abcjs-inline-audio {
+     height: auto !important;
+ }
+
  #tunes,
  #sets {
  	display: flex;
@@ -237,18 +241,16 @@
  	padding: 0 5px;
  }
 
- .tune-entry-edit-btn,
- .set-entry-delete-btn,
- .tune-entry-sheet-btn {
+ .tune-entry-btn,
+ .set-entry-btn {
  	float: right;
  	margin-left: 5px;
  }
 
- .tune-entry-edit-btn:hover,
- .set-entry-delete-btn:hover,
- .tune-entry-sheet-btn:hover {
- 	color: red;
- 	cursor: pointer;
+ .tune-entry-btn:hover,
+ .set-entry-btn:hover {
+     color: red;
+     cursor: pointer;
  }
 
  div.tune-entry.tune-in-a-set {
