@@ -21,6 +21,8 @@
 	<script src="lib/tom-select.complete.min.js"></script>
 	<script src='lib/dragula.min.js'></script>
 	<script src='lib/abcjs-basic-min.js'></script>
+	<script src="lib/config.js"></script>
+	<script src="lib/api.js"></script>
 </head>
 
 <body>
@@ -443,14 +445,22 @@
 				}
 			},
 			model: {
-				url: "https://api.jsonbin.io/v3/b/64f6f51e8d92e126ae67569e",
 				selected_profile: "",
 				save: function ()
 				{
 					$("#save-btn")[0].disabled = true;
 					model.sets = helpers.sets.serialize();
 					model.tunes = helpers.tunes.serialize();
-					helpers.json.put(helpers.model.url, full_model);
+					// Save to MongoDB via API
+					TunebooksAPI.saveAllProfiles(full_model)
+						.then(() => {
+							console.log('Data saved successfully');
+						})
+						.catch(error => {
+							console.error('Error saving data:', error);
+							alert('Failed to save data: ' + error.message);
+							$("#save-btn")[0].disabled = false;
+						});
 				},
 				hasChanged: function ()
 				{
@@ -461,15 +471,21 @@
 				{
 					var url = new URL(window.location.href);
 					helpers.model.selected_profile = url.searchParams.get("t") || "flo";
-					helpers.json.get(helpers.model.url + "/latest").then(function (data)
-					{
-						full_model = data.record;
-						full_model[helpers.model.selected_profile] = full_model[helpers.model.selected_profile] || {};
-						model = full_model[helpers.model.selected_profile];
-						helpers.sets.deserialize();
-						helpers.tunes.deserialize();
-						helpers.profiles.init();
-					});
+					// Load from MongoDB via API
+					TunebooksAPI.getAllProfiles()
+						.then(function (data)
+						{
+							full_model = data.record || {};
+							full_model[helpers.model.selected_profile] = full_model[helpers.model.selected_profile] || { tunes: [], sets: [] };
+							model = full_model[helpers.model.selected_profile];
+							helpers.sets.deserialize();
+							helpers.tunes.deserialize();
+							helpers.profiles.init();
+						})
+						.catch(error => {
+							console.error('Error loading data:', error);
+							alert('Failed to load data: ' + error.message);
+						});
 				},
 				loadFromTunepal: function ()
 				{
