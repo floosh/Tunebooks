@@ -4,11 +4,15 @@
 
 const express = require('express');
 const path = require('path');
+const apiRoutes = require('./routes/api.routes');
 
 const app = express();
 
 // Middleware
 app.use(express.json()); // Parse JSON bodies
+
+// API Routes
+app.use('/api', apiRoutes);
 
 // Serve static files from the public directory
 app.use(express.static(path.join(__dirname, '../public')));

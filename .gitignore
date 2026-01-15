@@ -34,3 +34,4 @@ public/lib/config.prod.js
 # !public/lib/config.template.js
 data_sample.json
 Tunebooks.code-workspace
+.env*.local

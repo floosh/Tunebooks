@@ -21,7 +21,6 @@
 	<script src="lib/tom-select.complete.min.js"></script>
 	<script src='lib/dragula.min.js'></script>
 	<script src='lib/abcjs-basic-min.js'></script>
-	<script src="lib/config.js"></script>
 	<script src="lib/api.js"></script>
 </head>
 
@@ -307,7 +306,7 @@
 				{
 					if (!tune.abc)
 					{
-						tune.abc = helpers.tunes.findById(tune.id).abc;
+						tune.abc = helpers.tunes.findById(tune.id)?.abc;
 					}
 				},
 				delete: function (element)
