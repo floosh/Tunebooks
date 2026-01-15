@@ -48,6 +48,10 @@
 			<div id="tunes" class="pure-u-xl-1-4 pure-u-lg-1-3 pure-u-1">
 				<div class="tab-header">
 					<select id="tunesBrowse" placeholder="Search a tune..." hidden="true"></select>
+					<div id="tunes-loading" style="display: none; padding: 10px; text-align: center;">
+						<i class="fa fa-spinner fa-spin" style="font-size: 24px;"></i>
+						<span style="margin-top: 5px; color: #666;">Loading tunes database...</span>
+					</div>
 				</div>
 				<div id="tune-filter">
 					<div id="tune-filter-main">
@@ -353,7 +357,7 @@
 				},
 				findById(tune_id)
 				{
-					return tunes[tune_id];
+					return tunes ? tunes[tune_id] : undefined;
 				},
 				deserialize: function ()
 				{
@@ -461,7 +465,7 @@
 					var profile = getCurrentProfile();
 					profile.sets = helpers.sets.serialize();
 					profile.tunes = helpers.tunes.serialize();
-					
+
 					TunebooksAPI.saveProfile(helpers.model.selected_profile, profile)
 						.then(() => {
 							console.log('Data saved successfully');
@@ -486,9 +490,7 @@
 						{
 							full_model = data.record || {};
 							full_model[helpers.model.selected_profile] = full_model[helpers.model.selected_profile] || { tunes: [], sets: [] };
-							helpers.sets.deserialize();
-							helpers.tunes.deserialize();
-							helpers.profiles.init();
+							helpers.ui.refresh();
 						})
 						.catch(error => {
 							console.error('Error loading data:', error);
@@ -529,6 +531,13 @@
 						}
 					})
 				},
+				refresh: function ()
+				{
+					// Refresh UI
+					helpers.sets.deserialize();
+					helpers.tunes.deserialize();
+					helpers.profiles.init();
+				}
 			},
 			filters: {
 				search_string: null,
@@ -737,9 +746,7 @@
 					full_model[profileName] = full_model[profileName] || { tunes: [], sets: [] };
 					
 					// Refresh UI
-					helpers.sets.deserialize();
-					helpers.tunes.deserialize();
-					helpers.profiles.init();
+					helpers.ui.refresh();
 				}
 			},
             audio: {
@@ -890,9 +897,18 @@
 
 		var dumpurl = "https://raw.githubusercontent.com/adactio/TheSession-data/master/json/";
 		var jsonFiles = ["tunes.json"];
-		helpers.json.get(dumpurl + jsonFiles[0])
+		
+		// Show loading spinner for tunes
+		if (!helpers.ui.isMobileView())
+		{
+			$('#tunes-loading').show();
+		}
+		
+		// Load tunebook and TheSession data in parallel
+		var theSessionPromise = helpers.json.get(dumpurl + jsonFiles[0])
 			.then(function (data)
 			{
+				console.log('TheSession data loaded');
 				tunes = data.reduce((acc, t) =>
 				{
 					if (!acc[t.tune_id])
@@ -908,15 +924,26 @@
 					}
 					return acc;
 				}, {});
-
-				helpers.model.load();
-
+				
+				// Refresh UI after TheSession data is loaded
+				helpers.ui.refresh();
+				
+				// Initialize UI features that depend on TheSession data
 				if (!helpers.ui.isMobileView())
 				{
+					$('#tunes-loading').hide();
 					initTunesSelect();
-					initDragNDrop();
 				}
 			});
+
+		// Load tunebook immediately (don't wait for TheSession)
+		helpers.model.load();
+		
+		// Initialize drag and drop (doesn't depend on TheSession data)
+		if (!helpers.ui.isMobileView())
+		{
+			initDragNDrop();
+		}
 
 		$(function ()
 		{
