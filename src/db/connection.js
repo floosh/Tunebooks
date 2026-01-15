@@ -42,12 +42,12 @@ async function connect() {
 }
 
 /**
- * Get the database connection
- * @returns {Object} Database object
+ * Get the database connection (connects if not already connected)
+ * @returns {Promise<Object>} Database object
  */
-function getDb() {
+async function getDb() {
   if (!db) {
-    throw new Error('Database not connected. Call connect() first.');
+    await connect();
   }
   return db;
 }

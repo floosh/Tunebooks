@@ -12,7 +12,7 @@ const COLLECTION_NAME = 'tunebooks';
  * @returns {Promise<Array<string>>} Array of profile names
  */
 async function getProfileNames() {
-  const db = getDb();
+  const db = await getDb();
   const profiles = await db.collection(COLLECTION_NAME)
     .find({}, { projection: { profileName: 1, _id: 0 } })
     .sort({ profileName: 1 })
@@ -27,7 +27,7 @@ async function getProfileNames() {
  * @returns {Promise<Object|null>} Profile document or null if not found
  */
 async function getProfile(profileName) {
-  const db = getDb();
+  const db = await getDb();
   const profile = await db.collection(COLLECTION_NAME)
     .findOne({ profileName });
   
@@ -41,7 +41,7 @@ async function getProfile(profileName) {
  * @returns {Promise<Object>} Update result
  */
 async function updateProfile(profileName, profileData) {
-  const db = getDb();
+  const db = await getDb();
   
   const now = new Date();
   const document = {
