@@ -286,7 +286,11 @@
 
 		// Helper to get current profile data
 		function getCurrentProfile() {
-			return full_model[helpers.model.selected_profile] || { tunes: [], sets: [] };
+			var profileName = helpers.model.selected_profile;
+			if (!full_model[profileName]) {
+				full_model[profileName] = { tunes: [], sets: [] };
+			}
+			return full_model[profileName];
 		}
 
 		var helpers = {
@@ -422,7 +426,7 @@
 				serialize: function ()
 				{
 					var sets = [];
-					$("#sets-container > div.set-entry").each(function (id, set_entry)
+					$("#sets-container div.set-entry").each(function (id, set_entry)
 					{
 						var set = {
 							title: set_entry.querySelector("input.set-title").value,
@@ -457,8 +461,8 @@
 					var profile = getCurrentProfile();
 					profile.sets = helpers.sets.serialize();
 					profile.tunes = helpers.tunes.serialize();
-					// Save to MongoDB via API
-					TunebooksAPI.saveAllProfiles(full_model)
+					
+					TunebooksAPI.saveProfile(helpers.model.selected_profile, profile)
 						.then(() => {
 							console.log('Data saved successfully');
 						})
