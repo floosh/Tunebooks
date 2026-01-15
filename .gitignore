@@ -28,9 +28,9 @@ yarn-error.log*
 
 # Local config files with real API keys
 # Use config.template.js as reference and create:
-lib/config.local.js
-lib/config.prod.js
+public/lib/config.local.js
+public/lib/config.prod.js
 # But DO commit the template:
-# !lib/config.template.js
+# !public/lib/config.template.js
 data_sample.json
 Tunebooks.code-workspace
