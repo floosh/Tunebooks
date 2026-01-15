@@ -6,9 +6,6 @@
 const TunebooksAPI = (function() {
     'use strict';
 
-    /**
-     * Make an API request (relative URL)
-     */
     async function request(endpoint, options = {}) {
         const headers = {
             'Content-Type': 'application/json',

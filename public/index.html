@@ -272,8 +272,8 @@
 	</script>
 	<script id="profiles-template" type="text/x-handlebars-template">
 		{{#each this}}
-		<a href="?t={{this.name}}">
-		<div class="profile">
+		<a href="#" data-profile="{{this.name}}" class="profile-link">
+		<div class="profile {{#if this.selected}}profile-selected{{/if}}">
 			<p class="profile_name">{{this.name}}</p>
 			<p class="profile_info">{{tunes}} tunes, {{sets}} sets</p>
 		</div>
@@ -282,8 +282,12 @@
 	</script>
 	<script>
 		var tunes, templates = [], tune_entry_in_edit_mode;
-		var model = { tunes: [], sets: [] };
 		var full_model = {};
+
+		// Helper to get current profile data
+		function getCurrentProfile() {
+			return full_model[helpers.model.selected_profile] || { tunes: [], sets: [] };
+		}
 
 		var helpers = {
 			tunes: {
@@ -317,7 +321,7 @@
 				},
 				clear: function ()
 				{
-					$("tunes-container").html("");
+					$("#tunes-container").html("");
 				},
 				edit: function (element)
 				{
@@ -350,11 +354,12 @@
 				deserialize: function ()
 				{
 					helpers.tunes.clear();
-					if (model.tunes)
+					var profile = getCurrentProfile();
+					if (profile.tunes)
 					{
-						for (var i = model.tunes.length - 1; i >= 0; i--)
+						for (var i = profile.tunes.length - 1; i >= 0; i--)
 						{
-							helpers.tunes.add(model.tunes[i]);
+							helpers.tunes.add(profile.tunes[i]);
 						}
 					}
 					helpers.ui.highlightUsedtunes();
@@ -406,7 +411,7 @@
 				},
 				clear: function ()
 				{
-					$("sets-container").html("");
+					$("#sets-container").html("");
 				},
 				delete: function (element)
 				{
@@ -417,7 +422,7 @@
 				serialize: function ()
 				{
 					var sets = [];
-					$("div.set-entry").each(function (id, set_entry)
+					$("#sets-container > div.set-entry").each(function (id, set_entry)
 					{
 						var set = {
 							title: set_entry.querySelector("input.set-title").value,
@@ -434,9 +439,10 @@
 				deserialize: function ()
 				{
 					helpers.sets.clear();
-					if (model.sets)
+					var profile = getCurrentProfile();
+					if (profile.sets)
 					{
-						model.sets.forEach(function (set)
+						profile.sets.forEach(function (set)
 						{
 							helpers.sets.add(set);
 						})
@@ -448,8 +454,9 @@
 				save: function ()
 				{
 					$("#save-btn")[0].disabled = true;
-					model.sets = helpers.sets.serialize();
-					model.tunes = helpers.tunes.serialize();
+					var profile = getCurrentProfile();
+					profile.sets = helpers.sets.serialize();
+					profile.tunes = helpers.tunes.serialize();
 					// Save to MongoDB via API
 					TunebooksAPI.saveAllProfiles(full_model)
 						.then(() => {
@@ -464,7 +471,6 @@
 				hasChanged: function ()
 				{
 					$("#save-btn")[0].disabled = false;
-					helpers.ui.highlightUsedtunes();
 				},
 				load: function ()
 				{
@@ -476,7 +482,6 @@
 						{
 							full_model = data.record || {};
 							full_model[helpers.model.selected_profile] = full_model[helpers.model.selected_profile] || { tunes: [], sets: [] };
-							model = full_model[helpers.model.selected_profile];
 							helpers.sets.deserialize();
 							helpers.tunes.deserialize();
 							helpers.profiles.init();
@@ -702,9 +707,35 @@
 							name: profile_name,
 							tunes: full_model[profile_name].tunes.length,
 							sets: full_model[profile_name].sets.length,
+							selected: profile_name === helpers.model.selected_profile
 						}
 					});
 					$("#menu-profiles").html(templates["profiles-template"](profiles_data));
+					
+					// Add click handlers for profile switching
+					$('.profile-link').on('click', function(e) {
+						e.preventDefault();
+						var profileName = $(this).data('profile');
+						helpers.profiles.switchTo(profileName);
+					});
+				},
+				switchTo: function(profileName)
+				{
+					if (profileName === helpers.model.selected_profile) {
+						return; // Already on this profile
+					}
+					
+					// Update URL without reload
+					history.pushState(null, '', '?t=' + profileName);
+					
+					// Switch profile data
+					helpers.model.selected_profile = profileName;
+					full_model[profileName] = full_model[profileName] || { tunes: [], sets: [] };
+					
+					// Refresh UI
+					helpers.sets.deserialize();
+					helpers.tunes.deserialize();
+					helpers.profiles.init();
 				}
 			},
             audio: {
